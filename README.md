@@ -20,6 +20,8 @@ Maybe I should read the code in the logic of abstraction:
 | 2019 / 11 / 03 | Interface - `java.util.Collection`              |
 | 2019 / 11 / 04 | Abstract Class - `java.util.AbstractCollection` |
 | 2019 / 11 / 05 | Abstract Class - `java.util.AbstractList`       |
+| 2019 / 11 / 05 | Interface - `java.util.Iterator`                |
+| 2019 / 11 / 05 | Interface - `java.util.Iterator`                |
 
 ---
 
