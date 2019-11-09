@@ -23,6 +23,8 @@ Maybe I should read the code in the logic of abstraction:
 | 2019 / 11 / 05 | Interface - `java.util.Iterator`                             |
 | 2019 / 11 / 05 | Interface - `java.util.ListIterator`                         |
 | 2019 / 11 / 06 | Class - `java.util.ArrayList`                                |
+| 2019 / 11 / 08 | Class - `java.util.LinkedList`                               |
+| 2019 / 11 / 08 | Interface - `java.util.Queue`                                |
 
 ---
 
