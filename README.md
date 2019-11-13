@@ -30,6 +30,7 @@ Maybe I should read the code in the logic of abstraction:
 | 2019 / 11 / 12 | Class - `java.util.PriorityQueue`                            |
 | 2019 / 11 / 12 | Interface - `java.util.Set`                                  |
 | 2019 / 11 / 12 | Abstract Class - `java.util.AbstractSet`                     |
+| 2019 / 11 / 13 | Interface - `java.util.Map`                                  |
 
 ---
 
