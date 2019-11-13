@@ -33,6 +33,7 @@ Maybe I should read the code in the logic of abstraction:
 | 2019 / 11 / 13 | Interface - `java.util.Map`                                  |
 | 2019 / 11 / 13 | Abstract Class - `java.util.AbstractMap`                     |
 | 2019 / 11 / 13 | Interface - `java.util.SortedMap`                            |
+| 2019 / 11 / 13 | Interface - `java.util.NavigableMap`                         |
 
 ---
 
