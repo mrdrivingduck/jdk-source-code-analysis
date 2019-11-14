@@ -534,13 +534,129 @@ private E removeAt(int i) {
 
 将数组中的最后一个元素放到被删除的位置
 
-并向下调整堆 (由于最后一个元素本来在堆底，被提上来以后显然不用上浮)
+* 实现试图向下调整堆 (向下调整的概率较大，因为原最后一个元素位于堆底)，并返回 `null`
+* 如果不能再向下调整堆，则向上调整堆
+    * 如果也无法向上调整堆，则说明该位置刚好适合该元素，返回 `null`
+    * 否则返回该元素本身
 
-内部的 `if` 是为了防止迭代器漏掉遍历的元素
+这个操作用于防止迭代器调用 `remove()` 后漏掉遍历的元素
 
-* 假设迭代器按数组顺序遍历
-* 最后一个元素被放到了被删除元素的位置，而没有下沉
-* 那么在这一轮迭代中将会被忽略
+* 如果返回 `null`，说明最后一个元素被放到了做删除操作的地方，没有上浮或下沉
+    * 该元素会被漏掉
+    * 迭代器的指针需要回退一下
+* 如果返回不为 `null`，说明最后一个元素移到做删除操作的地方后已经上浮
+    * 该元素会被漏掉
+    * 而且靠迭代器指针回退一格已经无法遍历到它
+
+在这种情况下，可以看看迭代器的实现：
+
+```java
+/**
+ * Returns an iterator over the elements in this queue. The iterator
+ * does not return the elements in any particular order.
+ *
+ * @return an iterator over the elements in this queue
+ */
+public Iterator<E> iterator() {
+    return new Itr();
+}
+
+private final class Itr implements Iterator<E> {
+    /**
+     * Index (into queue array) of element to be returned by
+     * subsequent call to next.
+     */
+    private int cursor = 0;
+
+    /**
+     * Index of element returned by most recent call to next,
+     * unless that element came from the forgetMeNot list.
+     * Set to -1 if element is deleted by a call to remove.
+     */
+    private int lastRet = -1;
+
+    /**
+     * A queue of elements that were moved from the unvisited portion of
+     * the heap into the visited portion as a result of "unlucky" element
+     * removals during the iteration.  (Unlucky element removals are those
+     * that require a siftup instead of a siftdown.)  We must visit all of
+     * the elements in this list to complete the iteration.  We do this
+     * after we've completed the "normal" iteration.
+     *
+     * We expect that most iterations, even those involving removals,
+     * will not need to store elements in this field.
+     */
+    private ArrayDeque<E> forgetMeNot = null;
+
+    /**
+     * Element returned by the most recent call to next iff that
+     * element was drawn from the forgetMeNot list.
+     */
+    private E lastRetElt = null;
+
+    /**
+     * The modCount value that the iterator believes that the backing
+     * Queue should have.  If this expectation is violated, the iterator
+     * has detected concurrent modification.
+     */
+    private int expectedModCount = modCount;
+
+    public boolean hasNext() {
+        return cursor < size ||
+            (forgetMeNot != null && !forgetMeNot.isEmpty());
+    }
+
+    @SuppressWarnings("unchecked")
+    public E next() {
+        if (expectedModCount != modCount)
+            throw new ConcurrentModificationException();
+        if (cursor < size)
+            return (E) queue[lastRet = cursor++];
+        if (forgetMeNot != null) {
+            lastRet = -1;
+            lastRetElt = forgetMeNot.poll();
+            if (lastRetElt != null)
+                return lastRetElt;
+        }
+        throw new NoSuchElementException();
+    }
+
+    public void remove() {
+        if (expectedModCount != modCount)
+            throw new ConcurrentModificationException();
+        if (lastRet != -1) {
+            E moved = PriorityQueue.this.removeAt(lastRet);
+            lastRet = -1;
+            if (moved == null)
+                cursor--;
+            else {
+                if (forgetMeNot == null)
+                    forgetMeNot = new ArrayDeque<>();
+                forgetMeNot.add(moved);
+            }
+        } else if (lastRetElt != null) {
+            PriorityQueue.this.removeEq(lastRetElt);
+            lastRetElt = null;
+        } else {
+            throw new IllegalStateException();
+        }
+        expectedModCount = modCount;
+    }
+}
+```
+
+迭代器中维护一个 `forgetMeNot` 队列
+
+用于记录所有从未被访问的位置上浮到已被访问的位置后的元素
+
+* 如果被提上来的最后一个元素 __下沉__，或在原删除位置 __不上浮也不下沉__
+    * 这种情况下，只有原删除位置的元素会被忽略一次
+    * 只需要让 `cursor--`，重新迭代原删除位置，就能保证所有元素都被迭代
+* 如果被提上来的元素上浮，被置换到原删除位置的元素肯定已经被访问过
+    * 这种情况下，浮上去的那个元素显然被忽略了，而且退指针也没用
+    * 就将其加入 `forgetMeNot` 队列中
+
+在常规遍历结束后，还需要遍历 `forgetMeNot` 队列，才算完成一次完整的迭代
 
 ---
 
