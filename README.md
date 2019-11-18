@@ -36,6 +36,7 @@ Maybe I should read the code in the logic of abstraction:
 | 2019 / 11 / 13 | Interface - `java.util.NavigableMap`                         |
 | 2019 / 11 / 14 | Class - `java.util.TreeMap`                                  |
 | 2019 / 11 / 16 | Class - `java.util.HashMap`                                  |
+| 2019 / 11 / 16 | Class - `java.util.LinkedHashMap`                            |
 
 ---
 
