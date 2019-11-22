@@ -8,11 +8,7 @@ Created by : Mr Dk.
 
 ---
 
-I should know some implementation details in JDK.
-
-Maybe I should read the code in the logic of abstraction:
-
-* From the top to the bottom
+I should know some implementation details of _JDK_ .
 
 ---
 
@@ -44,6 +40,7 @@ Maybe I should read the code in the logic of abstraction:
 | 2019 / 11 / 20 | Interface - `java.util.NavigableSet`                         |
 | 2019 / 11 / 21 | Class - `java.util.TreeSet`                                  |
 | 2019 / 11 / 21 | Class - `java.util.HashSet`                                  |
+| 2019 / 11 / 22 | Class - `java.util.LinkedHashSet`                            |
 
 ---
 
