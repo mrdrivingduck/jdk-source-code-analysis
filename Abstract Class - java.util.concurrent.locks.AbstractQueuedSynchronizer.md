@@ -58,7 +58,11 @@ public abstract class AbstractQueuedSynchronizer
 * `setState()`
 * `compareAndSetState()`
 
-子类需要重写的五个函数:
+这三个函数仅提供了修改锁状态的途径
+
+但由于锁的具体定义不同 (某 bit 代表某种含义)
+
+需要子类根据锁的具体实现重写以下五个函数:
 
 * `tryAcquire()`
 * `tryRelease()`
@@ -93,6 +97,8 @@ if (tryRelease(arg))
 可以看到，入队操作在 `tryAcquire()` 之后调用
 
 在这之间，可能会被别的试图获得锁的线程插队
+
+这是由 CPU 的调度决定的，即所谓的不公平锁
 
 在子类实现 `tryAcquire()` 时，可以在内部调用一定的检查函数
 
