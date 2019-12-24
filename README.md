@@ -47,9 +47,11 @@ Some implementation details of _JDK_ .
 
 ## Concurrent
 
-| Interface                         | Abstract Class | Class | Link                                                     |
-| --------------------------------- | -------------- | ----- | -------------------------------------------------------- |
-| `java.util.concurrent.locks.Lock` |                |       | [link](Interface%20%2d%20java.util.concurrent.locks.Lock.md) |
+| Interface                         | Abstract Class                                           | Class | Link                                                         |
+| --------------------------------- | -------------------------------------------------------- | ----- | ------------------------------------------------------------ |
+| `java.util.concurrent.locks.Lock` |                                                          |       | [link](Interface%20%2d%20java.util.concurrent.locks.Lock.md) |
+|                                   | `java.util.concurrent.locks.AbstractOwnableSynchronizer` |       | [link](Abstract Class%20%2d%20java.util.concurrent.locks.AbstractOwnableSynchronizer.md) |
+|                                   | `java.util.concurrent.locks.AbstractQueuedSynchronizer`  |       | [link](Abstract Class%20%2d%20java.util.concurrent.locks.AbstractQueuedSynchronizer.md) |
 
 ---
 
