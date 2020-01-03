@@ -856,15 +856,29 @@ protected Collection<Thread> getQueuedThreads() {
 
 ## Summary
 
+_Reentrant_ 是可重入性的意思
+
+体现为同一个线程可以多次持有该锁
+
+当锁计数器为 0 时，线程才可以释放锁
+
 可以看到 ReentrantLock 的占用过程中
 
-先进行 CAS 试图占用锁，如果失败，则加入 AQS 的等待队列
+先进行 CAS 试图占有锁，如果失败，则加入 AQS 的等待队列
 
 所以 ReentrantLock 是一种悲观锁
 
 因为它是互斥的，所以占用不到锁的线程就只能进入休眠
 
 CAS 仅用于解决 __锁有没有被抓住__ 这一关键问题
+
+### 与 `synchronized` 关键字的区别
+
+* 一个实现于 JVM 中，是关键字；一个实现于 JDK 中，是类
+* 线程在等待 ReentrantLock 时可以被中断，而等待 `synchronized` 不行
+* ReentrantLock 可以被指定为公平锁
+* ReentrantLock 可以绑定多个 Condition 对象
+* 在性能上，`synchronized` 关键字在 JVM 中被优化
 
 ---
 
