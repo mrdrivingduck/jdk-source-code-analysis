@@ -54,6 +54,7 @@ Some implementation details of _JDK_ .
 |  | `java.util.concurrent.locks.AbstractQueuedSynchronizer`  |  | [link](Abstract%20Class%20%2d%20java.util.concurrent.locks.AbstractQueuedSynchronizer.md) |
 |  |  | `java.util.concurrent.locks.ReentrantLock` | [link](Class%20%2d%20java.util.concurrent.locks.ReentrantLock.md) |
 | `java.util.concurrent.locks.ReadWriteLock` |  |  | [link](Interface%20%2d%20java.util.concurrent.locks.ReadWriteLock.md) |
+|  |  | `java.util.concurrent.locks.ReentrantReadWriteLock` | [link](Class%20%2d%20java.util.concurrent.locks.ReentrantReadWriteLock.md) |
 
 ---
 
