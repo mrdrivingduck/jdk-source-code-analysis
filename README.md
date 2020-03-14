@@ -60,7 +60,7 @@ Some implementation details of _JDK_ .
 
 ## License
 
-Copyright © 2019, Jingtang Zhang. ([MIT License](LICENSE))
+Copyright © 2019-2020, Jingtang Zhang. ([MIT License](LICENSE))
 
 ---
 
