@@ -4,11 +4,13 @@
 
 Created by : Mr Dk.
 
-2019 / 11 / 03 @Nanjing, P.R.China
+2019 / 11 / 03
+
+@Nanjing, P.R.China
 
 ---
 
-Some implementation details of _JDK_ .
+Analyze the implementation details of JDK 8.
 
 ---
 
@@ -43,8 +45,6 @@ Some implementation details of _JDK_ .
 |                          |                                | `java.util.HashSet`         | [link](Class%20%2d%20java.util.HashSet.md)                     |
 |                          |                                | `java.util.LinkedHashSet`   | [link](Class%20%2d%20java.util.LinkedHashSet.md)               |
 
----
-
 ## Concurrent
 
 | Interface                         | Abstract Class                                           | Class | Link                                                         |
@@ -55,6 +55,12 @@ Some implementation details of _JDK_ .
 |  |  | `java.util.concurrent.locks.ReentrantLock` | [link](Class%20%2d%20java.util.concurrent.locks.ReentrantLock.md) |
 | `java.util.concurrent.locks.ReadWriteLock` |  |  | [link](Interface%20%2d%20java.util.concurrent.locks.ReadWriteLock.md) |
 |  |  | `java.util.concurrent.locks.ReentrantReadWriteLock` | [link](Class%20%2d%20java.util.concurrent.locks.ReentrantReadWriteLock.md) |
+
+## Wrapper Class
+
+| Interface | AbstractClass | Class               | Link                                 |
+| --------- | ------------- | ------------------- | ------------------------------------ |
+|           |               | `java.lang.Integer` | [link](Class%20%2d%20java.lang.Integer.md) |
 
 ---
 
