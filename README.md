@@ -56,11 +56,12 @@ Analyze the implementation details of JDK 8.
 | `java.util.concurrent.locks.ReadWriteLock` |  |  | [link](Interface%20%2d%20java.util.concurrent.locks.ReadWriteLock.md) |
 |  |  | `java.util.concurrent.locks.ReentrantReadWriteLock` | [link](Class%20%2d%20java.util.concurrent.locks.ReentrantReadWriteLock.md) |
 
-## Wrapper Class
+## Java Lang Class
 
-| Interface | AbstractClass | Class               | Link                                 |
-| --------- | ------------- | ------------------- | ------------------------------------ |
-|           |               | `java.lang.Integer` | [link](Class%20%2d%20java.lang.Integer.md) |
+| Interface | Abstract Class | Class               | Link                                       |
+| --------- | -------------- | ------------------- | ------------------------------------------ |
+|           |                | `java.lang.Integer` | [link](Class%20%2d%20java.lang.Integer.md) |
+|           |                | `java.lang.String`  | [link](Class%20%2d%20java.lang.String.md)  |
 
 ---
 
