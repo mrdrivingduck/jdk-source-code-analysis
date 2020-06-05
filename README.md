@@ -58,10 +58,11 @@ Analyze the implementation details of JDK 8.
 
 ## Java Lang Class
 
-| Interface | Abstract Class | Class               | Link                                       |
-| --------- | -------------- | ------------------- | ------------------------------------------ |
-|           |                | `java.lang.Integer` | [link](Class%20%2d%20java.lang.Integer.md) |
-|           |                | `java.lang.String`  | [link](Class%20%2d%20java.lang.String.md)  |
+| Interface | Abstract Class                    | Class               | Link                                                         |
+| --------- | --------------------------------- | ------------------- | ------------------------------------------------------------ |
+|           |                                   | `java.lang.Integer` | [link](Class%20%2d%20java.lang.Integer.md)                   |
+|           |                                   | `java.lang.String`  | [link](Class%20%2d%20java.lang.String.md)                    |
+|           | `java.lang.AbstractStringBuilder` |                     | [link](Abstract%20Class%20%2d%20java.lang.AbstractStringBuilder.md) |
 
 ---
 
