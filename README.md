@@ -12,8 +12,6 @@ Created by : Mr Dk.
 
 Analyze the implementation details of JDK 8.
 
----
-
 ## Containers
 
 | Interface                | Abstract Class                 | Class                       | Link                                                       |
@@ -55,6 +53,7 @@ Analyze the implementation details of JDK 8.
 |  |  | `java.util.concurrent.locks.ReentrantLock` | [link](Class%20%2d%20java.util.concurrent.locks.ReentrantLock.md) |
 | `java.util.concurrent.locks.ReadWriteLock` |  |  | [link](Interface%20%2d%20java.util.concurrent.locks.ReadWriteLock.md) |
 |  |  | `java.util.concurrent.locks.ReentrantReadWriteLock` | [link](Class%20%2d%20java.util.concurrent.locks.ReentrantReadWriteLock.md) |
+|  |  | `java.util.concurrent.atomic.AtomicInteger` | [link](Class%20%2d%20java.util.concurrent.atomic.AtomicInteger.md) |
 
 ## Java Lang Class
 

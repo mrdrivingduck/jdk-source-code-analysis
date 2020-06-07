@@ -17,11 +17,7 @@ public abstract class AbstractOwnableSynchronizer
 }
 ```
 
-被线程互斥持有的 __同步器__
-
-这个类中提供了创建锁以及锁持有者的信息的基类
-
-由其子类维护这些信息，用于控制并监视锁的使用
+被线程互斥持有的 **同步器**。这个类中提供了创建锁以及锁持有者的信息的基类，由其子类维护这些信息，用于控制并监视锁的使用。
 
 ```java
 /**
@@ -59,9 +55,7 @@ protected AbstractOwnableSynchronizer() { }
 private transient Thread exclusiveOwnerThread;
 ```
 
-维护当前具有互斥访问资格的线程
-
-并由以下两个函数修改该变量
+维护当前具有互斥访问资格的线程，并由以下两个函数修改该变量。
 
 ```java
 /**
