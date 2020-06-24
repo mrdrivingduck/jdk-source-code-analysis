@@ -4,9 +4,7 @@
 
 Created by : Mr Dk.
 
-2019 / 11 / 03
-
-@Nanjing, P.R.China
+2019 / 11 / 03 @Nanjing, P.R.China
 
 ---
 
@@ -56,6 +54,7 @@ Analyze the implementation details of JDK 8.
 |  |  | `java.util.concurrent.atomic.AtomicInteger` | [link](Class%20%2d%20java.util.concurrent.atomic.AtomicInteger.md) |
 | | | `java.util.concurrent.atomic.AtomicIntegerArray` | [link](Class%20%2d%20java.util.concurrent.atomic.AtomicIntegerArray.md) |
 | | `java.util.concurrent.atomic.AtomicIntegerFieldUpdater` |  | [link](Abstract%20Class%20%2d%20java.util.concurrent.atomic.AtomicIntegerFieldUpdater.md) |
+| |  | `java.util.concurrent.atomic.AtomicReference` | [link](Class%20%2d%20java.util.concurrent.atomic.AtomicReference.md) |
 
 ## Java Lang Class
 
