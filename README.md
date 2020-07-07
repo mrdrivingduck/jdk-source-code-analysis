@@ -111,6 +111,12 @@ Analyze the implementation details of JDK 8.
 | --------------------- | ------------------------------------------------------- |
 | `java.io.InputStream` | [link](Abstract%20Class%20%2d%20java.io.InputStream.md) |
 
+### Classes
+
+| Class                     | Link                                             |
+| ------------------------- | ------------------------------------------------ |
+| `java.io.FileInputStream` | [link](Class%20%2d%20java.io.FileInputStream.md) |
+
 ---
 
 ## License
