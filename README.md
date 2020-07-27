@@ -118,6 +118,7 @@ Analyze the implementation details of JDK 8.
 | `java.io.FileInputStream` | [link](Class%20%2d%20java.io.FileInputStream.md) |
 | `java.io.FilterInputStream` | [link](Class%20%2d%20java.io.FilterInputStream.md) |
 | `java.io.DataInputStream` | [link](Class%20%2d%20java.io.DataInputStream.md) |
+| `java.io.BufferedInputStream` | [link](Class%20%2d%20java.io.BufferedInputStream.md) |
 
 ---
 
