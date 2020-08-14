@@ -120,6 +120,7 @@ Analyze the implementation details of JDK 8.
 | `java.io.DataInputStream` | [link](Class%20%2d%20java.io.DataInputStream.md) |
 | `java.io.BufferedInputStream` | [link](Class%20%2d%20java.io.BufferedInputStream.md) |
 | `java.io.ByteArrayInputStream` | [link](Class%20%2d%20java.io.ByteArrayInputStream.md) |
+| `java.io.PushbackInputStream` | [link](Class%20%2d%20java.io.PushbackInputStream.md) |
 
 ---
 
