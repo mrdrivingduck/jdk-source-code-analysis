@@ -110,6 +110,7 @@ Analyze the implementation details of JDK 8.
 | Class                 | Link                                                    |
 | --------------------- | ------------------------------------------------------- |
 | `java.io.InputStream` | [link](Abstract%20Class%20%2d%20java.io.InputStream.md) |
+| `java.io.Reader`      | [link](Abstract%20Class%20%2d%20java.io.Reader.md) |
 
 ### Classes
 
@@ -121,6 +122,7 @@ Analyze the implementation details of JDK 8.
 | `java.io.BufferedInputStream` | [link](Class%20%2d%20java.io.BufferedInputStream.md) |
 | `java.io.ByteArrayInputStream` | [link](Class%20%2d%20java.io.ByteArrayInputStream.md) |
 | `java.io.PushbackInputStream` | [link](Class%20%2d%20java.io.PushbackInputStream.md) |
+| `java.io.SequenceInputStream` | [link](Class%20%2d%20java.io.SequenceInputStream.md) |
 
 ---
 
