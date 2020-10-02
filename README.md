@@ -123,6 +123,8 @@ Analyze the implementation details of JDK 8.
 | `java.io.ByteArrayInputStream` | [link](Class%20%2d%20java.io.ByteArrayInputStream.md) |
 | `java.io.PushbackInputStream` | [link](Class%20%2d%20java.io.PushbackInputStream.md) |
 | `java.io.SequenceInputStream` | [link](Class%20%2d%20java.io.SequenceInputStream.md) |
+| `java.io.InputStreamReader` | [link](Class%20%2d%20java.io.InputStreamReader.md) |
+| `java.io.FileReader` | [link](Class%20%2d%20java.io.FileReader.md) |
 
 ---
 

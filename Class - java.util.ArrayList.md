@@ -18,25 +18,17 @@ public class ArrayList<E> extends AbstractList<E>
 }
 ```
 
-List 的可调整大小数组的实现
+List 的可调整大小数组的实现。
 
 * 实现了所有的 List 可选操作
 * 与 Vector 几乎相同，但是不是同步的
 
-如果多个线程访问 ArrayList 实例
-
-至少一个线程修改了 ArrayList 的结构
-
-则需要在外部同步
+如果多个线程访问 ArrayList 实例，至少一个线程修改了 ArrayList 的结构，则需要在外部同步：
 
 * 如果 ArrayList 被别的对象封装，则需要对封装对象同步
 * 如果没有被封装，而需要被 `Collections.synchronizedList()` 封装
 
-使用迭代器迭代时
-
-如果没有使用迭代器自己的函数操作 ArrayList
-
-则会抛出 `ConcurrentModificationException`
+使用迭代器迭代时，如果没有使用迭代器自己的函数操作 ArrayList，则会抛出 `ConcurrentModificationException`。
 
 ```java
 /**
@@ -138,15 +130,11 @@ transient Object[] elementData; // non-private to simplify nested class access
 private int size;
 ```
 
-用一个数组来存储所有的元素
-
-数组的默认容量为 10 (即预分配的空间)
-
-用 `size` 来维护 ArrayList 中有多少个元素
+用一个数组来存储所有的元素，数组的默认容量为 10 (即预分配的空间)，用 `size` 来维护 ArrayList 中有多少个元素。
 
 ---
 
-构造函数
+构造函数：
 
 * 创建一个空的 ArrayList
 * 但是指定初始分配容量
@@ -171,7 +159,7 @@ public ArrayList(int initialCapacity) {
 }
 ```
 
-构造函数
+构造函数：
 
 * 创建空的 ArrayList
 * 使用默认的初始容量 (10)
@@ -185,13 +173,7 @@ public ArrayList() {
 }
 ```
 
-构造函数
-
-* 通过一个集合创建 ArrayList
-
-使用所有集合定义的 `toArray()` 函数
-
-并处理不返回 `Object[]` 或空数组的情况
+构造函数：通过一个集合创建 ArrayList。使用所有集合定义的 `toArray()` 函数，并处理不返回 `Object[]` 或空数组的情况。
 
 ```java
 /**
@@ -233,9 +215,7 @@ public void trimToSize() {
 }
 ```
 
-将数组的容量压缩到当前数组的大小
-
-调这个函数可以最小化 ArrayList 的空间
+将数组的容量压缩到当前数组的大小，调这个函数可以最小化 ArrayList 的空间。
 
 ---
 
@@ -287,15 +267,7 @@ private void grow(int minCapacity) {
 }
 ```
 
-将新扩展的容量设置为老容量的 1.5 倍 (n + n / 2)
-
-如果说这个大小还低于用户指定的大小
-
-* 则直接使用用户指定的大小
-
-如果说这个大小已经高于最大的数组大小
-
-* 使用最大的数组大小
+将新扩展的容量设置为老容量的 1.5 倍 (n + n / 2)。如果说这个大小还低于用户指定的大小，则直接使用用户指定的大小；如果说这个大小已经高于最大的数组大小，则使用最大的数组大小。
 
 ```java
 /**
@@ -372,7 +344,7 @@ public int lastIndexOf(Object o) {
 }
 ```
 
-从头或尾开始寻找数组中是否存在某个元素
+从头或尾开始寻找数组中是否存在某个元素：
 
 * 基于 `equals()` 进行比较
 * 允许 `null` 元素
@@ -399,14 +371,7 @@ public Object clone() {
 }
 ```
 
-返回一个 ArrayList 实例的浅拷贝
-
-数组本身被拷贝了一份
-
-* 即数组中每个元素 (引用) 被拷贝了
-* 但每个引用对应的对象没有被拷贝
-
-因此浅拷贝的效果是，两个不同的数组，相同的元素
+返回一个 ArrayList 实例的浅拷贝。数组本身被拷贝了一份，即数组中每个元素 (引用) 被拷贝了，但每个引用对应的对象没有被拷贝。因此浅拷贝的效果是，两个不同的数组，相同的元素。
 
 ---
 
@@ -430,7 +395,7 @@ public Object[] toArray() {
 }
 ```
 
-分配并返回一个新的数组
+分配并返回一个新的数组。
 
 ---
 
@@ -471,11 +436,7 @@ public <T> T[] toArray(T[] a) {
 }
 ```
 
-将内部数组赋值一份到给定类型的数组 `a` 中
-
-如果 `a` 的容量多余内部数组的元素个数
-
-则将最后一个元素设为 `null` (用于截断？)
+将内部数组赋值一份到给定类型的数组 `a` 中，如果 `a` 的容量多余内部数组的元素个数，则将最后一个元素设为 `null` (用于截断？)。
 
 ---
 
@@ -499,10 +460,7 @@ public E get(int index) {
 }
 ```
 
-取元素
-
-* 由于实现方式是数组
-* 在保证 index 合法的条件下，直接用下标找到对应元素并返回
+取元素。由于实现方式是数组，在保证 index 合法的条件下，直接用下标找到对应元素并返回。
 
 ---
 
@@ -525,9 +483,7 @@ public E set(int index, E element) {
 }
 ```
 
-在指定位置用新值替换旧值
-
-* 同样需要检验 index 的合法性
+在指定位置用新值替换旧值。同样需要检验 index 的合法性。
 
 ---
 
@@ -545,11 +501,7 @@ public boolean add(E e) {
 }
 ```
 
-在数组的最后添加元素
-
-首先需要保证数组的容量足够
-
-如果容量不够会扩展，因此会修改 `modCount`
+在数组的最后添加元素。首先需要保证数组的容量足够，如果容量不够会扩展，因此会修改 `modCount`。
 
 ```java
 /**
@@ -572,13 +524,7 @@ public void add(int index, E element) {
 }
 ```
 
-在指定位置加入元素
-
-同样也需要确保数组的容量足够
-
-然后将数组中 `index` 开始的元素搬运到后面去
-
-最后将元素放到空出的 `index` 位置
+在指定位置加入元素。同样也需要确保数组的容量足够，然后将数组中 `index` 开始的元素搬运到后面去，最后将元素放到空出的 `index` 位置。
 
 ---
 
@@ -608,11 +554,7 @@ public E remove(int index) {
 }
 ```
 
-首先检验 `index` 的合法性
-
-然后将数组后面的元素搬运到前面
-
-将数组最后一个空出的元素设为 `null` 便于 GC
+首先检验 `index` 的合法性，然后将数组后面的元素搬运到前面，将数组最后一个空出的元素设为 `null` 便于 GC。
 
 ```java
 /**
@@ -659,11 +601,7 @@ private void fastRemove(int index) {
 }
 ```
 
-删除元素在数组中的第一次出现
-
-* 也可以删除 `null`
-
-实现了一个内部版的 `fastRemove()`
+删除元素在数组中的第一次出现，也可以删除 `null`，实现了一个内部版的 `fastRemove()`。
 
 * 不进行边界检测
 * 也不返回被移除的值
@@ -694,15 +632,7 @@ public boolean addAll(Collection<? extends E> c) {
 }
 ```
 
-将输入集合转换为数组，并获得新数组的长度
-
-确保当前容量加上新数组的长度后不会超过总容量
-
-然后将新数组中的元素拷贝到原数组的最后
-
-下一个版本功能类似，但是用户指定了开始插入的位置
-
-因此需要从插入位置开始，将原元素向后搬运
+将输入集合转换为数组，并获得新数组的长度，确保当前容量加上新数组的长度后不会超过总容量，然后将新数组中的元素拷贝到原数组的最后。下一个版本功能类似，但是用户指定了开始插入的位置，因此需要从插入位置开始，将原元素向后搬运。
 
 ```java
 /**
@@ -770,11 +700,7 @@ protected void removeRange(int fromIndex, int toIndex) {
 }
 ```
 
-将 `[fromIndex, toIndex)` 的元素删除
-
-并把区间右边的所有元素向左搬移
-
-右边空出的位置赋为 `null` 便于 GC
+将 `[fromIndex, toIndex)` 的元素删除，并把区间右边的所有元素向左搬移。右边空出的位置赋为 `null` 便于 GC。
 
 ---
 
@@ -799,7 +725,7 @@ private void rangeCheckForAdd(int index) {
 }
 ```
 
-范围检查函数
+范围检查函数。
 
 ---
 
@@ -834,11 +760,7 @@ private boolean batchRemove(Collection<?> c, boolean complement) {
 }
 ```
 
-删除给定集合中出现或者未出现的元素 (由 `complement` 决定)
-
-首先复制一份内部数组，然后依次判断该元素是否在给定集合中出现或未出现
-
-如果满足条件，则填充到数组的最开头
+删除给定集合中出现或者未出现的元素 (由 `complement` 决定)。首先复制一份内部数组，然后依次判断该元素是否在给定集合中出现或未出现。如果满足条件，则填充到数组的最开头。
 
 * 如果发现原数组没有被判断完，则直接将没被判断完的数组移动到被填充的元素最后
     * `contains()` 出现了异常？？？
@@ -952,7 +874,7 @@ private void readObject(java.io.ObjectInputStream s)
 }
 ```
 
-序列化与反序列化
+序列化与反序列化。
 
 ---
 
@@ -988,7 +910,7 @@ public ListIterator<E> listIterator() {
 }
 ```
 
-返回一个任意位置的 ListIterator
+返回一个任意位置的 ListIterator。
 
 ```java
 /**
@@ -1003,9 +925,7 @@ public Iterator<E> iterator() {
 }
 ```
 
-返回一个 Iterator
-
-两种迭代器都针对 ArrayList 做了重新实现：
+返回一个 Iterator。两种迭代器都针对 ArrayList 做了重新实现：
 
 ```java
 /**
@@ -1142,7 +1062,7 @@ private class ListItr extends Itr implements ListIterator<E> {
 }
 ```
 
-在 ArrayList 中，主要是针对数组下标进行操作
+在 ArrayList 中，主要是针对数组下标进行操作。
 
 ---
 
@@ -1210,15 +1130,7 @@ private class SubList extends AbstractList<E> implements RandomAccess {
 }
 ```
 
-返回一个子 List
-
-根据 `SubList` 类的构造函数
-
-这个子 List 是父 List 的一个备份 (不是副本！)
-
-子 List 中实现了父 List 中的所有操作
-
-对子 List 的操作会体现在父 List 上
+返回一个子 List。根据 `SubList` 类的构造函数，这个子 List 是父 List 的一个备份 (不是副本！)。子 List 中实现了父 List 中的所有操作，对子 List 的操作会体现在父 List 上。
 
 ---
 
@@ -1239,9 +1151,7 @@ public void forEach(Consumer<? super E> action) {
 }
 ```
 
-对每一个元素应用 `action` 的操作
-
-并检查是否存在并发修改
+对每一个元素应用 `action` 的操作，并检查是否存在并发修改。
 
 ---
 
@@ -1290,17 +1200,11 @@ public boolean removeIf(Predicate<? super E> filter) {
 }
 ```
 
-移除所有满足条件的元素
+移除所有满足条件的元素。首先将所有的元素过一遍，统计有多少个元素需要被删除。对于满足过滤条件的元素，在一个 `BitSet` 中记录该元素的位置。如果说有元素要被删除的话：
 
-首先将所有的元素过一遍，统计有多少个元素需要被删除
-
-* 对于满足过滤条件的元素，在一个 `BitSet` 中记录该元素的位置
-
-如果说有元素要被删除的话
-
-* 再一次遍历，依次将元素向前搬，但跳过要被删除的元素
-* 搬运完毕后，将多余的空位填充为 `null` 便于 GC
-* 修改 `modCount` 和 `size`
+1. 再一次遍历，依次将元素向前搬，但跳过要被删除的元素
+2. 搬运完毕后，将多余的空位填充为 `null` 便于 GC
+3. 修改 `modCount` 和 `size`
 
 ---
 
@@ -1321,7 +1225,7 @@ public void replaceAll(UnaryOperator<E> operator) {
 }
 ```
 
-将 `operator` 应用于所有元素
+将 `operator` 应用于所有元素。
 
 ---
 
@@ -1338,25 +1242,13 @@ public void sort(Comparator<? super E> c) {
 }
 ```
 
-根据传入的 `Comparator`，调 `Array` 中的排序函数进行排序
+根据传入的 `Comparator`，调 `Array` 中的排序函数进行排序。
 
 ---
 
 ## Summary
 
-由于主要是数组操作
-
-所以实现上还算是比较简单
-
-我说的简单是指我大概还能读懂... 😌
-
-另外大致看了一下 `java.util.Vector`
-
-实现上基本是相同的
-
-区别是 Vector 的函数基本上都带有 `synchronized` 关键字
-
-所以是线程安全的
+大致看了一下 `java.util.Vector`，实现上基本是相同的。区别是 Vector 的函数基本上都带有 `synchronized` 关键字，所以是线程安全的。
 
 ---
 

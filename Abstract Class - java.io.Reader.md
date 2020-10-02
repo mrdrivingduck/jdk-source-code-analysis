@@ -296,3 +296,6 @@ public void reset() throws IOException {
  */
 abstract public void close() throws IOException;
 ```
+
+---
+

@@ -17,53 +17,31 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 }
 ```
 
-基于 Hash 表的 Map 接口实现
+基于 Hash 表的 Map 接口实现，提供了所有 Map 的可选操作，并允许 `null` 的 key 或 value。除了不同步和允许 `null` 以外，与 `Hashtable` 基本等价。
 
-提供了所有 Map 的可选操作
-
-并允许 `null` 的 key 或 value
-
-* 除了不同步和允许 `null` 以外，与 `Hashtable` 基本等价
-
-这个实现类对于 Map 中的顺序不作任何保证
-
-* 特别地，不保证顺序会随着时间而保持不变
-
-关于时间复杂度：
+这个实现类对于 Map 中的顺序不作任何保证。特别地，不保证顺序会随着时间而保持不变。关于时间复杂度：
 
 * 如果哈希函数将元素均匀分布在桶中，`put()` 和 `get()` 将达到 `O(1)`
 * 遍历集合，将与 `capacity` + `size` 的时间成比例
 
-因此，如果迭代性能很重要
-
-* 最好不要将初始的 `capacity` 设得过高
-* 或者说，不要将 `load factor` 设置得过低
-
-这两个因素影响着 HashMap 的性能
+因此，如果迭代性能很重要。最好不要将初始的 `capacity` 设得过高；或者说，不要将 `load factor` 设置得过低。这两个因素影响着 HashMap 的性能：
 
 * `capacity` 指 hash table 中桶的个数
 * `load factor` 指的是在 hash table 自动增长桶容量前，hash table 可以被装得多满
 
-当 hash table 中的 `capacity` 和 `load factor` 超出，会进行 __rehashed__
+当 hash table 中的 `capacity` 和 `load factor` 超出，会进行 **rehash**：
 
 * 内部数据结构会重建
 * 桶个数提升两倍
 
-在通常情况下，保持 `load factor` 为 __0.75__ 是时间开销和空间开销的一个折衷
+在通常情况下，保持 `load factor` 为 **0.75** 是时间开销和空间开销的一个折衷。如果有很多 entry 要被存储到 HashMap 中，设置足够的初始 capacity 比自动的 rehash 更有效。使用相同的 hashcode 作为 key 会降低性能。
 
-* 如果有很多 entry 要被存储到 HashMap 中
-    * 设置足够的初始 capacity 比自动的 rehash 更有效
-    * 使用相同的 hashcode 作为 key 会降低性能
+该实现类不同步。如果有超过 1 个线程对集合进行结构性修改 (增删 entry)，必须在外部被同步
 
-该实现类不同步
+* 要么被封装集合的对象同步
+* 如果没有，则 `Map m = Collections.synchronizedMap(new HashMap(...));`
 
-* 如果有超过 1 个线程对集合进行结构性修改 (增删 entry)，必须在外部被同步
-    * 要么被封装集合的对象同步
-    * 如果没有，则 `Map m = Collections.synchronizedMap(new HashMap(...));`
-
-在迭代器迭代期间，除了使用迭代器自身的 `remove()` 外
-
-任何对集合的结构修改都会导致 `ConcurrentModificationException`
+在迭代器迭代期间，除了使用迭代器自身的 `remove()` 外，任何对集合的结构修改都会导致 `ConcurrentModificationException`。
 
 * 但不对非同步的并发修改作出完全保证
 * 因此不能利用这种异常来保证正确性
@@ -226,15 +204,11 @@ static final int UNTREEIFY_THRESHOLD = 6;
 static final int MIN_TREEIFY_CAPACITY = 64;
 ```
 
-可以看到，默认的初始化容量为 16
+可以看到，默认的初始化容量为 16，最大的容量为 1 << 30。
 
-最大的容量为 1 << 30
-
-当冲突的链表长度超过 8 时，将链表转化为树
-
-当树的大小低于 6 时，将树转换为链表
-
-当容量低于 64 时，hash 冲突不会被树化
+* 当冲突的链表长度超过 8 时，将链表转化为树
+* 当树的大小低于 6 时，将树转换为链表
+* 当容量低于 64 时，hash 冲突不会被树化
 
 ---
 
@@ -261,7 +235,7 @@ static final int hash(Object key) {
 }
 ```
 
-计算指定 key 对应的 hash 值
+计算指定 key 对应的 hash 值。
 
 > 具体为什么要这么算没有看懂
 
@@ -340,17 +314,12 @@ static final int tableSizeFor(int cap) {
 }
 ```
 
-返回一个给定容量的 2 的整幂
+返回一个给定容量的 2 的整幂，保证数组的容量总是 2 的幂 (方便通过与运算进行 hash)。
 
-保证数组的容量总是 2 的幂
-
-无法解释原理
-
-* 反正按照代码逻辑推理推理
 * 最后一次将 16 bit 右移，充斥整个 32-bit integer 数据
 * 保证 integer 前面的 bit 都是 0，后面的 bit 都是 1，即 `2^n - 1`
 
-那么 `2^n - 1 + 1` 一定是 `2^n`
+那么 `2^n - 1 + 1` 一定是 `2^n`。
 
 ---
 
@@ -397,9 +366,7 @@ public HashMap() {
 }
 ```
 
-可以指定初始的 capacity 和 load factor 构造集合
-
-* capacity 会被转化为对应的 2 的幂
+可以指定初始的 capacity 和 load factor 构造集合。capacity 会被转化为对应的 2 的幂。
 
 ```java
 /**
@@ -470,7 +437,7 @@ static class Node<K,V> implements Map.Entry<K,V> {
 }
 ```
 
-基本的桶结点的定义
+基本的桶结点的定义。
 
 ---
 
@@ -488,7 +455,7 @@ public void putAll(Map<? extends K, ? extends V> m) {
 }
 ```
 
-将给定集合中的所有 entry 放入哈希表
+将给定集合中的所有 entry 放入哈希表。
 
 ```java
 /**
@@ -519,7 +486,7 @@ final void putMapEntries(Map<? extends K, ? extends V> m, boolean evict) {
 }
 ```
 
-用于实现 __拷贝构造函数__ 和 `putAll()`
+用于实现 **拷贝构造函数** 和 `putAll()`：
 
 * 首先判断 table 是否已分配
     * 如果还未分配，就计算分配的数组大小
@@ -528,7 +495,7 @@ final void putMapEntries(Map<? extends K, ? extends V> m, boolean evict) {
     * 如果超出阈值，就需要 `resize()`
 * 最后将每一个元素放入集合
 
-将元素放入集合使用的是接下来的 `putVal()` 函数
+将元素放入集合使用的是接下来的 `putVal()` 函数。
 
 ---
 
@@ -603,7 +570,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 }
 ```
 
-将 entry 加入哈希表
+将 entry 加入哈希表：
 
 * 首先判断哈希表是否为空，为空则调 `resize()` 初始化
 * 如果没有碰撞的函数 (没有桶)，则初始化新的桶结点
@@ -619,10 +586,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
         * 返回旧 value
 * 添加结束后，如果超过了扩容阈值，则调 `resize()` 扩容
 
-n 为哈希表的长度
-
-* 哈希表的实际下标为 `[0, n - 1]`
-* 所以将元素的 hash 值映射到哈希表上就是 `(n - 1) & hash`
+n 为哈希表的长度。哈希表的实际下标为 `[0, n - 1]`，所以将元素的 hash 值映射到哈希表上就是 `(n - 1) & hash`。
 
 ---
 
@@ -789,19 +753,9 @@ final Node<K,V>[] resize() {
 }
 ```
 
-根据现在的容量和扩容阈值，计算新的容量和扩容阈值
+根据现在的容量和扩容阈值，计算新的容量和扩容阈值。一般情况下，是扩容两倍。未初始化的哈希表也会调这个函数，将哈希表数组初始化为默认长度。
 
-* 一般情况下，是扩容两倍
-
-未初始化的哈希表也会调这个函数
-
-* 将哈希表数组初始化为默认长度
-
-用新计算出的扩容阈值替代 `threshold`
-
-用新计算出的容量重新分配哈希表数组
-
-如果原哈希表不为空，就把 entry 搬到新的哈希表中
+用新计算出的扩容阈值替代 `threshold`，用新计算出的容量重新分配哈希表数组。如果原哈希表不为空，就把 entry 搬到新的哈希表中：
 
 * 如果数组中的某一项不为 `null`，则将该项置 `null` 便于 GC
     * 如果只有该结点一个，则直接复制
@@ -840,7 +794,7 @@ public V remove(Object key) {
 }
 ```
 
-调 `removeNode()` 删除指定 key 的 entry
+调 `removeNode()` 删除指定 key 的 entry。
 
 ```java
 /**
@@ -932,13 +886,7 @@ public void clear() {
 }
 ```
 
-> 将整个集合清除，这没啥问题
->
-> 不过，将哈希表数组中的每个元素置 `null` 就 ok 了吗？？？
->
-> 那些链表啊红黑树结点啊不用被置 `null` 吗？
->
-> 莫非会自动被 GC ？ 😶
+> 将整个集合清除，这没啥问题。不过，将哈希表数组中的每个元素置 `null` 就 ok 了吗？？？那些链表啊红黑树结点啊不用被置 `null` 吗？莫非会自动被 GC ？ 😶
 
 ---
 
@@ -1009,8 +957,7 @@ final void treeifyBin(Node<K,V>[] tab, int hash) {
 将某个 hash 值的链表组织为红黑树
 
 * 如果哈希表数组低于树化阈值，就不整红黑树了，`resize()` 扩容一下拉倒
-* 否则就将链表中的每个 `Node<K,V>` 转化为 `TreeNode<K,V>`
-    * 然后调链表头 TreeNode 的 `treeify()` 建红黑树
+* 否则就将链表中的每个 `Node<K,V>` 转化为 `TreeNode<K,V>`；然后调链表头 TreeNode 的 `treeify()` 建红黑树
 
 可以看到这个函数中，甚至是 `TreeNode.treeify()` 中
 
@@ -1028,9 +975,7 @@ TreeNode<K,V> replacementTreeNode(Node<K,V> p, Node<K,V> next) {
 }
 ```
 
-实际上是用当前 `Node` 结点实例化了一个新的 `TreeNode` 结点
-
-具体的定义如下：
+实际上是用当前 `Node` 结点实例化了一个新的 `TreeNode` 结点。具体的定义如下：
 
 ```java
 /* ------------------------------------------------------------ */
@@ -1054,13 +999,11 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     // ...
 ```
 
-该结点继承自 `LinkedHashMap`
-
-既是红黑树结点，也是个双向链表结点
+该结点继承自 `LinkedHashMap`，既是红黑树结点，也是个双向链表结点。
 
 ---
 
-以下是所有树节点的内部函数
+以下是所有树节点的内部函数：
 
 ```java
 /**
@@ -1109,11 +1052,7 @@ final void treeify(Node<K,V>[] tab) {
 }
 ```
 
-具体的红黑树操作不研究了
-
-大体上，通过 `next` 遍历每一个元素
-
-将所有结点构造为一颗以 root 为根的红黑树
+具体的红黑树操作不研究了。大体上，通过 `next` 遍历每一个元素，将所有结点构造为一颗以 root 为根的红黑树：
 
 * 但是 root 结点可能在链表的中间
 * 所以要将 root 结点提到链表的最前面，放在哈希表数组一次就能引用到的地方
@@ -1146,15 +1085,7 @@ static <K,V> void moveRootToFront(Node<K,V>[] tab, TreeNode<K,V> root) {
 }
 ```
 
-根据 hash 值，在哈希表数组中找到对应下标
-
-将原第一个元素 `first` 记录
-
-将 `root` 放到哈希表数组对应下标处
-
-并将 `root` 从链表中间取出，将之前的链表和之后的链表串起来
-
-最后将 `first` 接在 `root` 的后面
+根据 hash 值，在哈希表数组中找到对应下标，将原第一个元素 `first` 记录，将 `root` 放到哈希表数组对应下标处，并将 `root` 从链表中间取出，将之前的链表和之后的链表串起来。最后将 `first` 接在 `root` 的后面。
 
 ---
 
@@ -1177,7 +1108,7 @@ final Node<K,V> untreeify(HashMap<K,V> map) {
 }
 ```
 
-返回非 TreeNode 版本的链表结点
+返回非 TreeNode 版本的链表结点。
 
 ---
 
@@ -1222,9 +1153,7 @@ final TreeNode<K,V> getTreeNode(int h, Object k) {
 }
 ```
 
-给定 hash 和 key，从 root 寻找结点
-
-* 比较 hashcode，进入左子树或右子树
+给定 hash 和 key，从 root 寻找结点。比较 hashcode，进入左子树或右子树。
 
 ---
 
@@ -1279,7 +1208,7 @@ final TreeNode<K,V> putTreeVal(HashMap<K,V> map, Node<K,V>[] tab,
 }
 ```
 
-将 entry 放入树中
+将 entry 放入树中：
 
 * 首先寻找插入位置，如果结点已经存在，则直接返回结点位置
     * 由调用该函数的 `putVal()` 来记录 old value 并返回
@@ -1400,13 +1329,7 @@ final void removeTreeNode(HashMap<K,V> map, Node<K,V>[] tab,
 }
 ```
 
-将结点从 `next` 和 `pred` 组织的链表中移出来
-
-如果移除后长度过小，则将红黑树复原为链表并返回
-
-否则就进行红黑树的删除结点操作
-
-并将新的 root 移动到哈希表数组中
+将结点从 `next` 和 `pred` 组织的链表中移出来。如果移除后长度过小，则将红黑树复原为链表并返回；否则就进行红黑树的删除结点操作，并将新的 root 移动到哈希表数组中。
 
 ---
 
@@ -1469,20 +1392,12 @@ final void split(HashMap<K,V> map, Node<K,V>[] tab, int index, int bit) {
 }
 ```
 
-这个函数只会被 `resize()` 调用
-
-将当前的红黑树拆分到新的哈希表数组中
-
-如果切分后树的大小低于阈值，则复原为链表
-
-同样，扩容后，原先映射到该桶 (红黑树) 的所有结点将可能映射到两个桶中
+这个函数只会被 `resize()` 调用，将当前的红黑树拆分到新的哈希表数组中。如果切分后树的大小低于阈值，则复原为链表。同样，扩容后，原先映射到该桶 (红黑树) 的所有结点将可能映射到两个桶中：
 
 * 一个是原位置的桶
 * 一个是原位置 + 原容量的桶
 
-利用 `next` 域对红黑树进行遍历
-
-根据计算出的 hash 值，将映射到两个桶的结点串成两个链表 `lo` 和 `hi`
+利用 `next` 域对红黑树进行遍历，根据计算出的 hash 值，将映射到两个桶的结点串成两个链表 `lo` 和 `hi`：
 
 * 若链表不为空且低于阈值，则转化为链表并放入对应桶中
 * 若链表不为空且高于阈值，则将链表放入对应桶中，并对链表头调用 `treeify()` 进行树化
@@ -1599,13 +1514,7 @@ static <K,V> boolean checkInvariants(TreeNode<K,V> t) {}
  */
 ```
 
-引入红黑树主要是为了 hashcode 分布特别不均匀时防止性能下降 (链表过长)
-
-* 比如多个 key 共用同一个 hashcode 的情况
-
-在一个分布较为均匀的 hashcode 下，基本上用不到树结点
-
-理想情况下，使用随机 hashcode，每个桶中的结点数量满足泊松分布，概率为：
+引入红黑树主要是为了 hashcode 分布特别不均匀时防止性能下降 (链表过长)，比如多个 key 共用同一个 hashcode 的情况。在一个分布较为均匀的 hashcode 下，基本上用不到树结点。理想情况下，使用随机 hashcode，每个桶中的结点数量满足泊松分布，概率为：
 
 * 0: 0.60653066
 * 1: 0.30326533
@@ -1618,17 +1527,13 @@ static <K,V> boolean checkInvariants(TreeNode<K,V> t) {}
 * 8: 0.00000006
 * more: less than 1 in ten million
 
-可以看到，超过树化阈值 (8) 的概率已经相当低了
+可以看到，超过树化阈值 (8) 的概率已经相当低了。
 
 ---
 
 ## Summary
 
-把握 HashMap 具体实现的核心数据结构：
-
-* 哈希表数组 + 冲突链表 + 链表过长后转为红黑树
-
-还要把握所有操作遵循的共同思想
+把握 HashMap 具体实现的核心数据结构：哈希表数组 + 冲突链表 + 链表过长后转为红黑树。还要把握所有操作遵循的共同思想。
 
 需要遍历所有元素的函数：
 
@@ -1665,9 +1570,7 @@ static <K,V> boolean checkInvariants(TreeNode<K,V> t) {}
 * 维护这几种数据结构之间的转化
 * 维护总体的容量和阈值
 
-HashMap 算是所有的容器中最复杂的一个了
-
-专家不愧是专家，实现得很漂亮 👨‍💻
+HashMap 算是所有的容器中最复杂的一个了，专家不愧是专家，实现得很漂亮。👨‍💻
 
 ---
 
