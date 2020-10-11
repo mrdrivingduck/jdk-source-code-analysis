@@ -125,6 +125,7 @@ Analyze the implementation details of JDK 8.
 | `java.io.SequenceInputStream` | [link](Class%20%2d%20java.io.SequenceInputStream.md) |
 | `java.io.InputStreamReader` | [link](Class%20%2d%20java.io.InputStreamReader.md) |
 | `java.io.FileReader` | [link](Class%20%2d%20java.io.FileReader.md) |
+| `java.io.BufferedReader` | [link](Class%20%2d%20java.io.BufferedReader.md) |
 
 ---
 
