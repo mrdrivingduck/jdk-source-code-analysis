@@ -32,13 +32,9 @@ Map 的顺序被定义为迭代器返回元素的顺序
 * TreeMap 保证特定的顺序
 * HashMap 不保证顺序
 
-需要注意的是 - 可变对象作为 key 的情况
+需要注意的是可变对象作为 key 的情况：如果对象变化导致 `equals()` 和 `hashcode()` 的行为发生变化，map 的行为未知。
 
-* 如果对象变化导致 `equals()` 和 `hashcode()` 的行为发生变化，map 的行为未知
-
-所有的 Map 实现都应当提供 __空构造函数__ 和 __拷贝构造函数__
-
-不同的集合实现对于 `null` key 等有各自的限制
+所有的 Map 实现都应当提供 **空构造函数** 和 **拷贝构造函数**。不同的集合实现对于 `null` key 等有各自的限制。
 
 ```java
 /**
@@ -316,9 +312,7 @@ V put(K key, V value);
 V remove(Object key);
 ```
 
-移除指定的 key 对应的 value 并返回
-
-如果没有 key 对应的 value，则返回 `null`
+移除指定的 key 对应的 value 并返回。如果没有 key 对应的 value，则返回 `null`。
 
 ---
 
@@ -343,11 +337,7 @@ V remove(Object key);
 Set<K> keySet();
 ```
 
-这个集合会在 Map 内部被维护
-
-在迭代该集合的过程中对 Map 进行修改，行为未知
-
-* 除非用迭代器自己的 `remove()` 函数
+这个集合会在 Map 内部被维护，在迭代该集合的过程中对 Map 进行修改，行为未知。除非用迭代器自己的 `remove()` 函数。
 
 ```java
 /**
@@ -368,7 +358,7 @@ Set<K> keySet();
 Collection<V> values();
 ```
 
-同上，这个集合也会在 Map 中被维护
+同上，这个集合也会在 Map 中被维护。
 
 ```java
 /**
@@ -569,9 +559,7 @@ interface Entry<K,V> {
 }
 ```
 
-可以从 Entry 中提取 key 和 value
-
-也支持设置某个 key 对应的 value
+可以从 Entry 中提取 key 和 value，也支持设置某个 key 对应的 value。
 
 ---
 
@@ -606,9 +594,7 @@ default V getOrDefault(Object key, V defaultValue) {
 }
 ```
 
-返回 key 映射的 value
-
-如果 key 的映射不存在，那么返回一个默认值
+返回 key 映射的 value。如果 key 的映射不存在，那么返回一个默认值。
 
 ---
 
@@ -655,11 +641,7 @@ default void forEach(BiConsumer<? super K, ? super V> action) {
 }
 ```
 
-以迭代器迭代 `entrySet()` 的顺序对 entry 进行 `action` 操作
-
-直到迭代完毕或抛出异常
-
-不保证同步性
+以迭代器迭代 `entrySet()` 的顺序对 entry 进行 `action` 操作，直到迭代完毕或抛出异常。不保证同步性。
 
 ---
 
@@ -729,11 +711,7 @@ default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) 
 }
 ```
 
-根据 `entrySet()` 的遍历顺序
-
-对每个 value 应用指定的函数后
-
-将新的 value 代替旧的 value
+根据 `entrySet()` 的遍历顺序，对每个 value 应用指定的函数后，将新的 value 代替旧的 value。
 
 ---
 
@@ -791,13 +769,7 @@ default V putIfAbsent(K key, V value) {
 }
 ```
 
-如果指定的 key 在映射中不存在
-
-或 key 存在但是对应的 value 为 `null`
-
-就用新的 value 覆盖并返回 `null`
-
-否则返回原有的非 `null` 值
+如果指定的 key 在映射中不存在，或 key 存在但是对应的 value 为 `null`，就用新的 value 覆盖并返回 `null`；否则返回原有的非 `null` 值。
 
 ---
 
@@ -847,7 +819,7 @@ default boolean remove(Object key, Object value) {
 }
 ```
 
-当且仅当指定的 key 对应于指定的 value 时，删除 entry
+当且仅当指定的 key 对应于指定的 value 时，删除 entry。
 
 ---
 
@@ -905,9 +877,7 @@ default boolean replace(K key, V oldValue, V newValue) {
 }
 ```
 
-当且仅当指定的 key 映射到指定的 value (`oldValue`) 时
-
-将 `oldValue` 替换为 `newValue`
+当且仅当指定的 key 映射到指定的 value (`oldValue`) 时，将 `oldValue` 替换为 `newValue`。
 
 ---
 
@@ -959,9 +929,7 @@ default V replace(K key, V value) {
 }
 ```
 
-当且仅当指定的 key 存在映射时
-
-用 `value` 替换旧的 value
+当且仅当指定的 key 存在映射时，用 `value` 替换旧的 value。
 
 ---
 
@@ -1041,9 +1009,7 @@ default V computeIfAbsent(K key,
 }
 ```
 
-如果 key 的映射不存在，或对应的 value 为 `null`
-
-就利用 key 和 `mappingFunction` 计算一个非空的新 value，并加入映射
+如果 key 的映射不存在，或对应的 value 为 `null`，就利用 key 和 `mappingFunction` 计算一个非空的新 value，并加入映射。
 
 ---
 
@@ -1113,13 +1079,7 @@ default V computeIfPresent(K key,
 }
 ```
 
-针对指定的 key，Map 中已经存在非空映射
-
-利用 `remappingFunction` 对 key 和 oldValue 进行计算
-
-如果计算出的新 value 非空，则替代旧 value
-
-如果为空，就将现有的映射删除
+针对指定的 key，Map 中已经存在非空映射，利用 `remappingFunction` 对 key 和 oldValue 进行计算。如果计算出的新 value 非空，则替代旧 value；如果为空，就将现有的映射删除。
 
 ---
 
@@ -1206,13 +1166,7 @@ default V compute(K key,
 }
 ```
 
-对每一个指定的 key 及其旧的 value (或不存在 key 的映射而为 `null`)
-
-利用 `remappingFunction` 计算新 value
-
-如果新 value 不为 `null`，就将其替代旧 value 或 `null`
-
-否则就删除原有 key 的映射
+对每一个指定的 key 及其旧的 value (或不存在 key 的映射而为 `null`)，利用 `remappingFunction` 计算新 value。如果新 value 不为 `null`，就将其替代旧 value 或 `null`；否则就删除原有 key 的映射。
 
 ---
 
@@ -1291,27 +1245,10 @@ default V merge(K key, V value,
 }
 ```
 
-对于每一个指定的 key
+对于每一个指定的 key，如果映射不存在，或映射到的 value 为 `null`，就映射一个非空的默认值；对于映射 value 非空的 key，利用 `remappingFunction` 计算新 value。
 
-如果映射不存在，或映射到的 value 为 `null`，就映射一个非空的默认值
-
-对于映射 value 非空的 key，利用 `remappingFunction` 计算新 value
-
-如果新 value 为空，就删除映射
-
-如果新 value 不为空，就替代旧 value
-
----
-
-## Summary
-
-搞半天 Map 是一个独立接口
-
-Fine. 关于最后的一些操作
-
-应当是与实际的应用场景挂钩
-
-有预感 Map 的具体实现类会很复杂... 😶
+* 如果新 value 为空，就删除映射
+* 如果新 value 不为空，就替代旧 value
 
 ---
 
