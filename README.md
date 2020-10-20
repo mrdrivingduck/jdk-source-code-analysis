@@ -61,6 +61,7 @@ Analyze the implementation details of JDK 8.
 | ------------------------------------------ | ------------------------------------------------------------ |
 | `java.util.concurrent.locks.Lock`          | [link](Interface%20%2d%20java.util.concurrent.locks.Lock.md) |
 | `java.util.concurrent.locks.ReadWriteLock` | [link](Interface%20%2d%20java.util.concurrent.locks.ReadWriteLock.md) |
+| `java.util.concurrent.BlockingQueue`       | [link](Interface%20%2d%20java.util.concurrent.BlockingQueue.md) |
 
 ### Abstract Classes
 
@@ -81,7 +82,8 @@ Analyze the implementation details of JDK 8.
 | `java.util.concurrent.atomic.AtomicReference`         | [link](Class%20%2d%20java.util.concurrent.atomic.AtomicReference.md) |
 | `java.util.concurrent.atomic.AtomicStampedReference`  | [link](Class%20%2d%20java.util.concurrent.atomic.AtomicStampedReference.md) |
 | `java.util.concurrent.atomic.AtomicMarkableReference` | [link](Class%20%2d%20java.util.concurrent.atomic.AtomicStampedReference.md) |
-| `java.util.concurrent.ConcurrentHashMap` | [link](Class%20%2d%20java.util.concurrent.ConcurrentHashMap.md) |
+| `java.util.concurrent.ConcurrentHashMap`              | [link](Class%20%2d%20java.util.concurrent.ConcurrentHashMap.md) |
+| `java.util.concurrent.LinkedBlockingQueue`            | [link](Class%20%2d%20java.util.concurrent.LinkedBlockingQueue.md) |
 
 ## Java Lang Class
 

@@ -16,24 +16,14 @@ public interface NavigableSet<E> extends SortedSet<E> {
 }
 ```
 
-对 `SortedSet` 进行了扩展
-
-使其能够获得与给定元素的最近匹配元素
+对 `SortedSet` 进行了扩展，使其能够获得与给定元素的最近匹配元素：
 
 * 小于
 * 小于等于
 * 大于
 * 大于等于
 
-可以以升序或降序遍历
-
-甚至还可以获得一个顺序完全相反的集合视角
-
-* 但升序视角肯定比降序视角性能更好
-
-提供了返回并删除最大或最小元素的函数
-
-还提供了各种取子集的函数 (包含边界或不包含边界)
+可以以升序或降序遍历，甚至还可以获得一个顺序完全相反的集合视角。但升序视角肯定比降序视角性能更好。提供了返回并删除最大或最小元素的函数，还提供了各种取子集的函数 (包含边界或不包含边界)。
 
 ```java
 /**
@@ -171,7 +161,7 @@ E pollFirst();
 E pollLast();
 ```
 
-返回并删除最小或最大的元素
+返回并删除最小或最大的元素。
 
 ---
 
@@ -184,7 +174,7 @@ E pollLast();
 Iterator<E> iterator();
 ```
 
-返回升序迭代器
+返回升序迭代器。
 
 ```java
 /**
@@ -213,11 +203,7 @@ NavigableSet<E> descendingSet();
 Iterator<E> descendingIterator();
 ```
 
-返回反向集合视角和反向迭代器
-
-这里说是视角的原因是，集合还是同一个集合，只是视角不同
-
-因此通过反向视角操作集合，会在正向视角上体现
+返回反向集合视角和反向迭代器。这里说是视角的原因是，集合还是同一个集合，只是视角不同。因此通过反向视角操作集合，会在正向视角上体现。
 
 ---
 
@@ -319,9 +305,7 @@ NavigableSet<E> headSet(E toElement, boolean inclusive);
 NavigableSet<E> tailSet(E fromElement, boolean inclusive);
 ```
 
-分别返回 `(from, to)`, `(start, to)`, `(from, end)` 的子集
-
-并提供一个 `inclusive` 来指明是否包含边界
+分别返回 `(from, to)`, `(start, to)`, `(from, end)` 的子集，并提供一个 `inclusive` 来指明是否包含边界。
 
 ---
 
@@ -360,9 +344,7 @@ SortedSet<E> headSet(E toElement);
 SortedSet<E> tailSet(E fromElement);
 ```
 
-上一组函数的默认行为
-
-* 左闭右开
+上一组函数的默认行为：左闭右开。
 
 ---
 

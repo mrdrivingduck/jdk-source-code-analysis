@@ -18,7 +18,7 @@ public interface ListIterator<E> extends Iterator<E> {
 
 针对 List 的抽象迭代器
 
-* 允许从 __任意一个方向__ 遍历集合
+* 允许从 **任意一个方向** 遍历集合
 * 在遍历期间修改集合
 * 获得迭代器的当前位置
 
@@ -72,7 +72,7 @@ public interface ListIterator<E> extends Iterator<E> {
 boolean hasNext();
 ```
 
-遍历时是否还有更多的元素可以遍历
+遍历时是否还有更多的元素可以遍历。
 
 ---
 
@@ -90,7 +90,7 @@ boolean hasNext();
 E next();
 ```
 
-返回下一个元素，并使指针前进
+返回下一个元素，并使指针前进。
 
 ---
 
@@ -107,9 +107,7 @@ E next();
 boolean hasPrevious();
 ```
 
-这个是 ListIterator 特有的
-
-因为要支持双向的遍历
+这个是 ListIterator 特有的，因为要支持双向的遍历。
 
 ---
 
@@ -129,7 +127,7 @@ boolean hasPrevious();
 E previous();
 ```
 
-与 `next()` 配套
+与 `next()` 配套。
 
 ---
 
@@ -157,7 +155,7 @@ int nextIndex();
 int previousIndex();
 ```
 
-返回下一次调用 `next()` 或 `previous()` 的迭代器位置
+返回下一次调用 `next()` 或 `previous()` 的迭代器位置。
 
 ---
 
@@ -179,7 +177,7 @@ int previousIndex();
 void remove();
 ```
 
-移除迭代器返回的上一个元素
+移除迭代器返回的上一个元素。
 
 ---
 
@@ -207,7 +205,7 @@ void remove();
 void set(E e);
 ```
 
-用指定元素替换迭代器返回的上一个元素
+用指定元素替换迭代器返回的上一个元素。
 
 ---
 
@@ -244,14 +242,7 @@ void add(E e);
 
 ## Summary
 
-针对 List 定义了增、删、改的操作
-
-查操作本来就是迭代器的主要功能
-
-比较特殊的是双向性
-
-* 所以很多操作都定义了两套
-* 对应前后两个方向
+针对 List 定义了增、删、改的操作，查操作本来就是迭代器的主要功能，比较特殊的是双向性：所以很多操作都定义了两套，对应前后两个方向。
 
 ---
 

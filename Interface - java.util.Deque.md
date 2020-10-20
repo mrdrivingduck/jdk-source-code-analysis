@@ -15,15 +15,7 @@ public interface Deque<E> extends Queue<E> {
 }
 ```
 
-线性集合，支持在两端插入和删除
-
-Deque - "double ended queue" (pronounced __deck__)
-
-大部分实现对集合容量没有特定限制
-
-但也支持指定容量的双端队列
-
-接口对队列两端都定义了以下几种操作：
+线性集合，支持在两端插入和删除。Deque - "double ended queue" (pronounced **deck**)。大部分实现对集合容量没有特定限制，但也支持指定容量的双端队列。接口对队列两端都定义了以下几种操作：
 
 * insert
 * remove
@@ -195,6 +187,10 @@ Deque - "double ended queue" (pronounced __deck__)
 
 ---
 
+## 插入操作
+
+`add` 一族会在插入失败后抛出异常。
+
 ```java
 void addFirst(E e);
 void addLast(E e);
@@ -202,11 +198,11 @@ boolean offerFirst(E e);
 boolean offerLast(E e);
 ```
 
-插入操作
-
-`add` 一族会在插入失败后抛出异常
-
 ---
+
+## 删除操作
+
+`remove` 会在队列已经为空时抛出异常。
 
 ```java
 E removeFirst();
@@ -215,11 +211,11 @@ E pollFirst();
 E pollLast();
 ```
 
-删除操作
-
-`remove` 会在队列已经为空时抛出异常
-
 ---
+
+## 访问操作
+
+`get` 会在队列已经为空时抛出异常。
 
 ```java
 E getFirst();
@@ -227,10 +223,6 @@ E getLast();
 E peekFirst();
 E peekLast();
 ```
-
-访问操作
-
-`get` 会在队列已经为空时抛出异常
 
 ---
 
@@ -241,11 +233,7 @@ boolean removeLastOccurrence(Object o);
 
 ---
 
-双端队列在当做普通队列使用时
-
-以下函数和普通队列的函数等价
-
-数据从队尾加入，从队头删除
+双端队列在当做普通队列使用时，以下函数和普通队列的函数等价：数据从队尾加入，从队头删除。
 
 * `java.util.Queue.add()` - `addLast()`
 * `java.util.Queue.offer()` - `offerLast()`
@@ -256,11 +244,7 @@ boolean removeLastOccurrence(Object o);
 
 ---
 
-双端队列当做栈使用时
-
-以下函数等价
-
-总在队头出栈、入栈
+双端队列当做栈使用时，以下函数等价：总在队头出栈、入栈。
 
 * `push()` - `addFirst()`
 * `pop()` - `removeFirst()`

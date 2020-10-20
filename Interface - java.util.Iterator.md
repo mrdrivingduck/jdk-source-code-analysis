@@ -16,9 +16,7 @@ public interface Iterator<E> {
 }
 ```
 
-集合迭代器的抽象接口
-
-`Iterator` 和 `Enumeration` 的区别
+集合迭代器的抽象接口。`Iterator` 和 `Enumeration` 的区别：
 
 * 迭代器允许调用者在迭代期间删除元素
 
@@ -62,7 +60,7 @@ public interface Iterator<E> {
 boolean hasNext();
 ```
 
-返回迭代器是否还有更多元素
+返回迭代器是否还有更多元素。
 
 ---
 
@@ -76,7 +74,7 @@ boolean hasNext();
 E next();
 ```
 
-返回迭代的下一个元素
+返回迭代的下一个元素。
 
 ---
 
@@ -106,11 +104,7 @@ default void remove() {
 }
 ```
 
-删除底层集合中最后一个返回的元素
-
-对于一个元素只能被调用一次
-
-当底层集合被迭代过程中发生了修改，则行为不确定
+删除底层集合中最后一个返回的元素。对于一个元素只能被调用一次，当底层集合被迭代过程中发生了修改，则行为不确定。
 
 ---
 
@@ -139,9 +133,7 @@ default void forEachRemaining(Consumer<? super E> action) {
 }
 ```
 
-给定一个操作，对每一个元素应用一次操作
-
-直到完成，或出现异常
+给定一个操作，对每一个元素应用一次操作直到完成，或出现异常。
 
 ---
 

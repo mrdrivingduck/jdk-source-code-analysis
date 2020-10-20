@@ -16,17 +16,7 @@ public interface SortedSet<E> extends Set<E> {
 }
 ```
 
-有顺序保证的 Set
-
-* 由自然顺序或指定 `Comparator` 保证
-
-利用集合的有序性，提供了几种附加操作
-
-任何被插入集合的元素必须是可比较的
-
-而且顺序对于 `equals()` 来说必须一直一致
-
-取子集的函数全是左闭右开的区间 - `[)`
+有顺序保证的 Set，由自然顺序或指定 `Comparator` 保证。利用集合的有序性，提供了几种附加操作，任何被插入集合的元素必须是可比较的，而且顺序对于 `equals()` 来说必须一直一致。取子集的函数全是左闭右开的区间 - `[)`。
 
 ```java
 /**
@@ -125,7 +115,7 @@ public interface SortedSet<E> extends Set<E> {
 Comparator<? super E> comparator();
 ```
 
-返回比较器
+返回比较器。
 
 ---
 
@@ -164,7 +154,7 @@ Comparator<? super E> comparator();
 SortedSet<E> subSet(E fromElement, E toElement);
 ```
 
-取子集合，包含 `fromElement`，但不包含 `toElement`
+取子集合，包含 `fromElement`，但不包含 `toElement`。
 
 ---
 
@@ -197,7 +187,7 @@ SortedSet<E> subSet(E fromElement, E toElement);
 SortedSet<E> headSet(E toElement);
 ```
 
-取严格小于 `toElement` 的元素子集
+取严格小于 `toElement` 的元素子集。
 
 ---
 
@@ -230,7 +220,7 @@ SortedSet<E> headSet(E toElement);
 SortedSet<E> tailSet(E fromElement);
 ```
 
-返回大于等于 `fromElement` 的元素子集
+返回大于等于 `fromElement` 的元素子集。
 
 ---
 
@@ -252,7 +242,7 @@ E first();
 E last();
 ```
 
-返回最大或最小元素
+返回最大或最小元素。
 
 ---
 

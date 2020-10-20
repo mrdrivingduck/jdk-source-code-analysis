@@ -16,9 +16,7 @@ public interface Queue<E> extends Collection<E> {
 }
 ```
 
-队列接口
-
-定义的基本操作：
+队列接口。定义的基本操作：
 
 * /
     * 抛异常
@@ -37,17 +35,7 @@ public interface Queue<E> extends Collection<E> {
     * `element(e)`
     * `peek(e)`
 
-典型的队列是 FIFO 的
-
-例外是 __优先队列__
-
-* 根据指定的 `Comparator` 或元素的自然顺序排列
-
-或者 LIFO 的栈
-
-不管哪种实现，都在 `head` 处删除元素
-
-* 具体在哪里插入元素视具体实现而定
+典型的队列是 FIFO 的，例外是 **优先队列** - 根据指定的 `Comparator` 或元素的自然顺序排列；或者 LIFO 的栈。不管哪种实现，都在 `head` 处删除元素，具体在哪里插入元素视具体实现而定。
 
 ```java
 /**
@@ -181,9 +169,7 @@ public interface Queue<E> extends Collection<E> {
 boolean add(E e);
 ```
 
-无视违反容量限制，插入元素
-
-如果没有空间可用，抛出 `IllegalStateException` 异常
+无视违反容量限制，插入元素。如果没有空间可用，抛出 `IllegalStateException` 异常。
 
 ```java
 /**
@@ -206,11 +192,7 @@ boolean add(E e);
 boolean offer(E e);
 ```
 
-在容量受限的队列中
-
-试图插入元素
-
-如果失败会返回 `false`，而不是抛出异常
+在容量受限的队列中，试图插入元素。如果失败会返回 `false`，而不是抛出异常。
 
 ---
 

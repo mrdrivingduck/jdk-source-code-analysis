@@ -16,15 +16,9 @@ public interface Lock {
 }
 ```
 
-__锁__ 是用于控制多个线程访问共享资源的工具
+**锁** 是用于控制多个线程访问共享资源的工具。`synchroinzed` 关键字提供对每个对象的 `monitor` 的隐式访问。所有的锁应当按照获得的顺序被释放 (防止死锁)。
 
-`synchroinzed` 关键字提供对每个对象的 `monitor` 的隐式访问
-
-* 所有的锁应当按照获得的顺序被释放 (防止死锁)
-
-该接口的实现类能够提供更灵活的锁获取和锁释放机制
-
-锁的使用最好遵循:
+该接口的实现类能够提供更灵活的锁获取和锁释放机制。锁的使用最好遵循:
 
 ```java
 Lock l = ...;
@@ -36,17 +30,13 @@ try {
 }
 ```
 
-保证获得锁的代码被 `try-catch` 块保护，以便锁被释放
-
-此外，本接口还提供:
+保证获得锁的代码被 `try-catch` 块保护，以便锁被释放。此外，本接口还提供:
 
 * 非阻塞尝试获得锁的 `tryLock()` 函数
 * 可以被中断的尝试获得锁函数 `lockInterruptibly()`
 * 可以超时的尝试获得锁函数
 
-由于 `Lock` 本身也是对象，因此也可以通过 `synchronized` 获得 monitor 锁
-
-但为防止混淆，最好不要这样做
+由于 `Lock` 本身也是对象，因此也可以通过 `synchronized` 获得 monitor 锁。但为防止混淆，最好不要这样做。
 
 ```java
 /**
@@ -179,7 +169,7 @@ try {
  */
 ```
 
-下面看一下所有的 Lock 的函数定义
+下面看一下所有的 Lock 的函数定义。
 
 ---
 
@@ -202,11 +192,7 @@ try {
 void lock();
 ```
 
-获得锁
-
-* 如果当前的锁不可获得，那么该进程进入休眠并被重新调度，直到锁可被获得
-
-在实现中，应当具有检测错误获得锁的能力 (死锁等)
+获得锁。如果当前的锁不可获得，那么该进程进入休眠并被重新调度，直到锁可被获得。在实现中，应当具有检测错误获得锁的能力 (死锁等)。
 
 ---
 
@@ -262,18 +248,14 @@ void lockInterruptibly() throws InterruptedException;
 
 获得锁，除非当前线程被中断
 
-> 意思是 `lock()` 是不可中断等待锁
->
-> `lockInterruptibly()` 是可中断等待锁
+> 意思是 `lock()` 是不可中断等待锁，`lockInterruptibly()` 是可中断等待锁。
 
-如果锁可用，则立刻返回
-
-如果锁不可用，那么当前线程被重新调度，直到以下两种事件发生:
+如果锁可用，则立刻返回；如果锁不可用，那么当前线程被重新调度，直到以下两种事件发生:
 
 1. 锁可以被获得
 2. 其它线程中断了当前线程
 
-如果当前线程在等待锁时被中断，则抛出 `InterruptedException` 异常
+如果当前线程在等待锁时被中断，则抛出 `InterruptedException` 异常。
 
 ---
 
@@ -308,11 +290,7 @@ void lockInterruptibly() throws InterruptedException;
 boolean tryLock();
 ```
 
-在调用时，如果锁可用，就获得锁并返回 `true`
-
-如果锁不可用，则立刻返回 `false`
-
-示例用法:
+在调用时，如果锁可用，就获得锁并返回 `true`，如果锁不可用，则立刻返回 `false`。示例用法:
 
 ```java
 Lock lock = ...;
@@ -391,11 +369,7 @@ if (lock.tryLock()) {
 boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
 ```
 
-在给定的时间内获得锁
-
-如果锁可以被获得，那么立刻获得锁，并返回 `true`
-
-如果锁暂时不可获得，那么线程进入休眠，直到以下事件之一发生:
+在给定的时间内获得锁。如果锁可以被获得，那么立刻获得锁，并返回 `true`；如果锁暂时不可获得，那么线程进入休眠，直到以下事件之一发生:
 
 1. 锁被当前线程获得
 2. 其它线程中断当前线程 - `InterruptedException` 抛出
@@ -419,7 +393,7 @@ boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
 void unlock();
 ```
 
-释放锁
+释放锁。
 
 ---
 

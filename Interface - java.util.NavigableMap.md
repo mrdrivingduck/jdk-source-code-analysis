@@ -16,30 +16,18 @@ public interface NavigableMap<K,V> extends SortedMap<K,V> {
 }
 ```
 
-继承自 `SortedMap`
-
-能够快速返回与给定目标最近的匹配
+继承自 `SortedMap`，能够快速返回与给定目标最近的匹配。
 
 * `lowEntry()` - 返回小于给定的 key 的 entry
 * `floorEntry()` - 返回小于等于给定 key 的 entry
 * `ceilingEntry()` - 返回大于等于给定 key 的 entry
 * `higherEntry()` - 返回大于给定 key 的 entry
 
-如果没有匹配的 key，就返回 `null`
+如果没有匹配的 key，就返回 `null`。四个函数还分别有相对应的只返回 key 的版本：这些操作都用于定位，而不是遍历。
 
-四个函数还分别有相对应的只返回 key 的版本
+`descendingMap()` 返回一个视角相反的 Map，性能上比正视角的 Map 要慢。
 
-这些操作都用于定位，而不是遍历
-
-`descendingMap()` 返回一个视角相反的 Map
-
-* 性能上比正视角的 Map 要慢
-
-`subMap()`, `headMap()`, `tailMap()` 与 `SortedMap` 中的函数不同
-
-* 指定了额外的参数，来表示包含或是不包含边界
-
-此外，还提供了从两端删除最大或最小的 entry 的函数
+`subMap()`, `headMap()`, `tailMap()` 与 `SortedMap` 中的函数不同：指定了额外的参数，来表示包含或是不包含边界。此外，还提供了从两端删除最大或最小的 entry 的函数。
 
 ```java
 /**
@@ -134,7 +122,7 @@ Map.Entry<K,V> lowerEntry(K key);
 K lowerKey(K key);
 ```
 
-返回小于指定 key 的最大 entry 或 key
+返回小于指定 key 的最大 entry 或 key。
 
 ---
 
@@ -169,7 +157,7 @@ Map.Entry<K,V> floorEntry(K key);
 K floorKey(K key);
 ```
 
-返回小于等于指定 key 的最大 entry 或 key
+返回小于等于指定 key 的最大 entry 或 key。
 
 ---
 
@@ -204,7 +192,7 @@ Map.Entry<K,V> ceilingEntry(K key);
 K ceilingKey(K key);
 ```
 
-返回大于等于指定 key 的最小 entry 或 key
+返回大于等于指定 key 的最小 entry 或 key。
 
 ---
 
@@ -239,7 +227,7 @@ Map.Entry<K,V> higherEntry(K key);
 K higherKey(K key);
 ```
 
-返回大于指定 key 的最小 entry 或 key
+返回大于指定 key 的最小 entry 或 key。
 
 ---
 
@@ -263,7 +251,7 @@ Map.Entry<K,V> firstEntry();
 Map.Entry<K,V> lastEntry();
 ```
 
-返回 key 最小 / 最大的 entry
+返回 key 最小 / 最大的 entry。
 
 ---
 
@@ -287,7 +275,7 @@ Map.Entry<K,V> pollFirstEntry();
 Map.Entry<K,V> pollLastEntry();
 ```
 
-移除 key 最大 / 最小的 entry
+移除 key 最大 / 最小的 entry。
 
 ---
 
@@ -336,14 +324,7 @@ NavigableMap<K,V> descendingMap();
 NavigableSet<K> navigableKeySet();
 ```
 
-返回 Map 中包含的所有 key
-
-迭代器以升序访问
-
-这个集合被 Map 维护
-
-* 所以对这个集合的操作将会在 Map 中体现
-* 反之亦然
+返回 Map 中包含的所有 key，迭代器以升序访问。这个集合被 Map 维护，所以对这个集合的操作将会在 Map 中体现，反之亦然。
 
 ---
 
@@ -365,9 +346,7 @@ NavigableSet<K> navigableKeySet();
 NavigableSet<K> descendingKeySet();
 ```
 
-返回一个视角相反的有序 key Set
-
-性质与正序的 key Set 相同
+返回一个视角相反的有序 key Set，性质与正序的 key Set 相同
 
 ---
 
@@ -421,7 +400,7 @@ NavigableMap<K,V> subMap(K fromKey, boolean fromInclusive,
 SortedMap<K,V> subMap(K fromKey, K toKey);
 ```
 
-取指定 key 范围内的子集，但可以根据参数确定是否包含边界
+取指定 key 范围内的子集，但可以根据参数确定是否包含边界。
 
 ---
 
@@ -467,7 +446,7 @@ NavigableMap<K,V> headMap(K toKey, boolean inclusive);
 SortedMap<K,V> headMap(K toKey);
 ```
 
-取比指定的 key 更小的子集，可以根据参数确定是否包含边界
+取比指定的 key 更小的子集，可以根据参数确定是否包含边界。
 
 ---
 
@@ -513,7 +492,7 @@ NavigableMap<K,V> tailMap(K fromKey, boolean inclusive);
 SortedMap<K,V> tailMap(K fromKey);
 ```
 
-取比指定 key 更大的子集，可以根据参数确定是否包含边界
+取比指定 key 更大的子集，可以根据参数确定是否包含边界。
 
 ---
 

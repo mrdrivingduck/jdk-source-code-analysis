@@ -16,16 +16,9 @@ public interface SortedMap<K,V> extends Map<K,V> {
 }
 ```
 
-这种 Map 对 key 有顺序保证
+这种 Map 对 key 有顺序保证：Map 根据 key 的自然顺序或 `Comparator` 的结果进行排列，这种顺序反映在迭代器迭代 Map 时。
 
-* Map 根据 key 的自然顺序或 `Comparator` 的结果进行排列
-* 这种顺序反映在迭代器迭代 Map 时
-
-另外有几个额外操作利用了有序这一特性
-
-插入 Map 的 key 必须是可比较的
-
-* key 的比较是通过 `compareTo()` 而不是 `equals()` 完成的
+另外有几个额外操作利用了有序这一特性- 插入 Map 的 key 必须是可比较的。key 的比较是通过 `compareTo()` 而不是 `equals()` 完成的
 
 ```java
 /**
@@ -129,18 +122,11 @@ public interface SortedMap<K,V> extends Map<K,V> {
 Comparator<? super K> comparator();
 ```
 
-返回 `Comparator`
-
-如果 `Comparator` 为空，那么按照自然顺序进行排序
+返回 `Comparator`。如果 `Comparator` 为空，那么按照自然顺序进行排序。
 
 ---
 
-以下是一些根据 key 的排序特性定义的子集操作
-
-子集是集合部分元素的引用
-
-* 所以对子集的操作会反应在全集中
-* 反之亦然
+以下是一些根据 key 的排序特性定义的子集操作，子集是集合部分元素的引用。所以对子集的操作会反应在全集中，反之亦然。
 
 ```java
 /**
@@ -175,9 +161,7 @@ Comparator<? super K> comparator();
 SortedMap<K,V> subMap(K fromKey, K toKey);
 ```
 
-返回 `[fromKey, toKey)` 的子集
-
-* 如果 `fromKey == toKey`，那么返回的集合为空
+返回 `[fromKey, toKey)` 的子集。如果 `fromKey == toKey`，那么返回的集合为空。
 
 ```java
 /**
@@ -208,7 +192,7 @@ SortedMap<K,V> subMap(K fromKey, K toKey);
 SortedMap<K,V> headMap(K toKey);
 ```
 
-返回 key 值 `<` `toKey` 的子集
+返回 key 值 `<` `toKey` 的子集。
 
 ```java
 /**
@@ -239,7 +223,7 @@ SortedMap<K,V> headMap(K toKey);
 SortedMap<K,V> tailMap(K fromKey);
 ```
 
-返回 key 值 `≥` `fromKey` 的子集
+返回 key 值 `≥` `fromKey` 的子集。
 
 ---
 
@@ -261,7 +245,7 @@ K firstKey();
 K lastKey();
 ```
 
-返回最小 / 最大的 key
+返回最小 / 最大的 key。
 
 ---
 
@@ -286,17 +270,9 @@ K lastKey();
 Set<K> keySet();
 ```
 
-返回 Map 中的所有 key
+返回 Map 中的所有 key，Set 的迭代器以升序迭代所有的 key。这个集合是被 Map 内部维护的，对该集合的操作会体现在 Map 中，反之亦然。对该集合进行迭代时，如果 Map 被修改 (除了迭代器自身的 `remove()`)，行为未知。
 
-Set 的迭代器以升序迭代所有的 key
-
-这个结合是被 Map 内部维护的
-
-* 对该集合的操作会体现在 Map 中
-* 反之亦然
-* 对该集合进行迭代时，如果 Map 被修改 (除了迭代器自身的 `remove()`)，行为未知
-
-这个集合支持移出，但不支持插入
+这个集合支持移出，但不支持插入。
 
 ```java
 /**
@@ -320,11 +296,7 @@ Set 的迭代器以升序迭代所有的 key
 Collection<V> values();
 ```
 
-返回的顺序按照其对应的 key 的升序排列
-
-同样支持移出，但不支持插入
-
-且迭代期间不可并发修改
+返回的顺序按照其对应的 key 的升序排列。同样支持移出，但不支持插入，且迭代期间不可并发修改。
 
 ```java
 /**
@@ -348,9 +320,7 @@ Collection<V> values();
 Set<Map.Entry<K, V>> entrySet();
 ```
 
-将 key 和 value 作为一个整体 entry 返回
-
-返回的次序依旧是按照 key 的升序排列
+将 key 和 value 作为一个整体 entry 返回，返回的次序依旧是按照 key 的升序排列。
 
 ---
 
