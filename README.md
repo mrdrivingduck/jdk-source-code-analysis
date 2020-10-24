@@ -89,6 +89,8 @@ Analyze the implementation details of JDK 8.
 | `java.util.concurrent.ArrayBlockingQueue`             | [link](Class%20%2d%20java.util.concurrent.ArrayBlockingQueue.md) |
 | `java.util.concurrent.PriorityBlockingQueue`          | / |
 | `java.util.concurrent.LinkedTransferQueue`            | [link](Class%20%2d%20java.util.concurrent.LinkedTransferQueue.md) |
+| `java.util.concurrent.ConcurrentLinkedQueue`          | [link](Class%20%2d%20java.util.concurrent.ConcurrentLinkedQueue.md) |
+| `java.util.concurrent.ConcurrentLinkedDeque`          | / |
 
 ## Java Lang Class
 
