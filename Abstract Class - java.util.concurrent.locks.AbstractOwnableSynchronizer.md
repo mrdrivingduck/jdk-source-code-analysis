@@ -10,13 +10,6 @@ Nanjing, Jiangsu, China
 
 ## Definition
 
-```java
-public abstract class AbstractOwnableSynchronizer
-    implements java.io.Serializable {
-    
-}
-```
-
 被线程互斥持有的 **同步器**。这个类中提供了创建锁以及锁持有者的信息的基类，由其子类维护这些信息，用于控制并监视锁的使用。
 
 ```java
@@ -32,9 +25,11 @@ public abstract class AbstractOwnableSynchronizer
  * @since 1.6
  * @author Doug Lea
  */
+public abstract class AbstractOwnableSynchronizer
+    implements java.io.Serializable {
+    
+}
 ```
-
----
 
 ```java
 /** Use serial ID even though all fields transient. */
@@ -46,18 +41,14 @@ private static final long serialVersionUID = 3737899427754241961L;
 protected AbstractOwnableSynchronizer() { }
 ```
 
----
+维护当前具有互斥访问资格的线程，并由以下两个函数修改该变量。
 
 ```java
 /**
  * The current owner of exclusive mode synchronization.
  */
 private transient Thread exclusiveOwnerThread;
-```
 
-维护当前具有互斥访问资格的线程，并由以下两个函数修改该变量。
-
-```java
 /**
  * Sets the thread that currently owns exclusive access.
  * A {@code null} argument indicates that no thread owns access.

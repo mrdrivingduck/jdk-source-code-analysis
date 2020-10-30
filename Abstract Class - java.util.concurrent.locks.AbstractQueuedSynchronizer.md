@@ -10,35 +10,25 @@ Nanjing, Jiangsu, China
 
 ## Definition
 
-```java
-public abstract class AbstractQueuedSynchronizer
-    extends AbstractOwnableSynchronizer
-    implements java.io.Serializable {
-    
-}
-```
-
-本类提供了一套框架，用于实现基于 FIFO 等待队列的阻塞锁、信号量等、内部实现中，锁的状态用一个可被原子操作的 `int` 表示，继承自该类的子类需要:
+本类提供了一套框架，表示一个基于 FIFO 同步队列的抽象接口。基于该接口，子类可以实现阻塞锁、信号量等。在接口内部实现中，锁的状态用一个可被原子操作的 `int` 表示，继承自该类的子类需要：
 
 * 提供函数来修改锁的状态
 * 定义锁被持有和释放时对应的状态
 
-除此之外，本类的其它部分用于实现排队和阻塞的机制，不实现具体的同步接口。本类支持两种模式:
+除此之外，本类的其它部分用于实现排队和阻塞的机制，不实现具体的同步接口。本类支持两种模式：
 
 * 互斥 (exclusive) 模式 - 其它线程的锁获取操作将不会成功
 * 共享 (shared) 模式 - 多个线程共享获得锁可能会成功
 
 本类只有在一个地方需要区分这两种情况：在一个线程获得锁后，下一个正在等待的锁是否也可以获得锁。在不同模式下等待的线程共享同一个 FIFO 队列，通常来说，子类实现时只需支持一种模式即可，另一种模式不需实现。
 
-本类提供了对内部队列进行监控的函数，另外，本类的序列化只保存 `int` 锁变量的状态。因此，反序列化将得到空的线程队列。
-
-使用该类时，子类需要借助以下三个函数查看或修改同步状态: (即修改锁状态)
+本类提供了对内部队列进行监控的函数。另外，本类的序列化只保存 `int` 锁变量的状态。因此，反序列化将得到空的线程队列。使用该类时，子类需要借助以下三个函数查看或修改同步状态 (即修改锁状态)：
 
 * `getState()`
 * `setState()`
 * `compareAndSetState()`
 
-这三个函数仅提供了修改锁状态的途径，但由于锁的具体定义不同 (某 bit 代表某种含义)，需要子类根据锁的具体实现重写以下五个函数:
+这三个函数仅提供了修改锁状态的途径，但由于锁的具体定义不同 (锁状态的不同 bit 代表某种含义)，因此需要子类根据锁的使用方法来实现以下五个函数：
 
 * `tryAcquire()`
 * `tryRelease()`
@@ -48,9 +38,7 @@ public abstract class AbstractQueuedSynchronizer
 
 这些函数需要被实现为线程安全、简短、非阻塞。另外，从 `AbstractOwnableSynchronizer` 继承来的信息可以在互斥模式下追踪持有锁的线程。虽然内部实现是队列，但锁的获得不一定遵循 FIFO 的规则。
 
-互斥访问的核心操作:
-
-获得锁:
+互斥访问的核心操作。获得锁：
 
 ```java
 while (!tryAcquire(arg)) {
@@ -59,14 +47,14 @@ while (!tryAcquire(arg)) {
 }
 ```
 
-释放锁:
+释放锁：
 
 ```java
 if (tryRelease(arg))
     // unblock the first queued thread
 ```
 
-可以看到，入队操作在 `tryAcquire()` 之后调用。在这之间，可能会被别的试图获得锁的线程插队，这是由 CPU 的调度决定的，即所谓的不公平锁。在子类实现 `tryAcquire()` 时，可以在内部调用一定的检查函数，以提供一个 **公平** 的 FIFO 锁获取顺序。默认的不公平获取顺序会有更高的吞吐率，但不保证严格的顺序。
+可以看到，入队操作在 `tryAcquire()` 之后调用。在这之间，可能会被别的试图获得锁的线程插队，这是由 CPU 的调度决定的，即所谓的不公平锁。在子类实现 `tryAcquire()` 时，可以在内部调用一定的检查函数，以提供一个 **公平** 的 FIFO 锁获取顺序。默认的不公平获取顺序会有更高的吞吐率，因为刚释放锁的线程非常有可能立刻重新获得锁，不保证严格的入队顺序。
 
 ```java
 /**
@@ -315,11 +303,16 @@ if (tryRelease(arg))
  * @since 1.5
  * @author Doug Lea
  */
+public abstract class AbstractQueuedSynchronizer
+    extends AbstractOwnableSynchronizer
+    implements java.io.Serializable {
+    
+}
 ```
 
 ---
 
-构造函数。
+## Constructor
 
 ```java
 private static final long serialVersionUID = 7373984972572414691L;
@@ -333,12 +326,22 @@ protected AbstractQueuedSynchronizer() { }
 
 ---
 
-内部队列中的结点定义，使用了 **CLH 锁队列** 的变种：
+## Queue Nodes
+
+内部同步队列中的结点定义，使用了 **CLH 锁队列** 的变种：
 
 * CLH 通常被用于自旋锁
 * 在这里也被实现为阻塞锁
 
-内部的 `waitStatus` 维护了结点的线程等待状态。在 CLH 插入时，用一个原子的界限来表示一个线程是否已入队。`prev` 指针用于在线程被取消等待时重新链接链表。
+内部的 `waitStatus` 维护了结点的线程等待状态：
+
+* `CANCELLED` - 在同步队列中等待的线程等待超时或被中断，需要取消等待
+* `SIGNAL` - 后继结点的线程处于等待，当前结点释放同步状态或被取消后，通知后续结点
+* `CONDTITION` - 结点位于 **等待队列** 中，在接受到 `signal()` 后进入 **同步队列**
+* `PROPAGATE` - 下一次共享同步装填将被无条件传播
+* `INITIAL` - 初始状态
+
+在 CLH 插入时，用一个原子的界限来表示一个线程是否已入队。`prev` 指针用于在线程被取消等待时重新链接链表。
 
 ```java
 /**
@@ -559,6 +562,10 @@ static final class Node {
 
 ---
 
+## Queue
+
+维护同步队列的头尾指针，以及同步状态 (锁状态) 变量。当线程获取同步状态失败时，会将当前线程以及等待状态封装在结点中，然后加入队列并阻塞线程。当同步状态释放后，队列中的头结点会被唤醒，使其再次尝试获取同步状态。
+
 ```java
 /**
  * Head of the wait queue, lazily initialized.  Except for
@@ -580,7 +587,7 @@ private transient volatile Node tail;
 private volatile int state;
 ```
 
-维护队列的头尾指针，以及同步状态 (锁状态) 变量，用以下三个函数修改锁状态。
+以下三个函数可以修改锁状态。当可能有多个线程修改锁状态时，需要使用线程安全的 CAS 函数；如果确定只有一个线程修改锁状态，那么直接使用普通的 `get()` / `set()` 即可。
 
 ```java
 /**
@@ -618,7 +625,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 }
 ```
 
----
+加入队列的过程需要保证线程安全，因此使用 CAS 的方式设置头尾结点。
 
 ```java
 /**
@@ -641,11 +648,7 @@ private Node enq(final Node node) {
         }
     }
 }
-```
 
-将结点加入队列。更上层函数: 将当前线程，用给定模式 (互斥 / 共享) 创建为结点并入队。
-
-```java
 /**
  * Creates and enqueues node for current thread and given mode.
  *
@@ -668,26 +671,7 @@ private Node addWaiter(Node mode) {
 }
 ```
 
----
-
-```java
-/**
- * Sets head of queue to be node, thus dequeuing. Called only by
- * acquire methods.  Also nulls out unused fields for sake of GC
- * and to suppress unnecessary signals and traversals.
- *
- * @param node the node
- */
-private void setHead(Node node) {
-    head = node;
-    node.thread = null;
-    node.prev = null;
-}
-```
-
-设置队列的头结点，从而出队。
-
----
+同步队列遵循 FIFO，头结点是 **成功获取同步状态** 的结点，头结点在释放同步状态时，唤醒后继结点。以下函数获取了当前结点的 `next`，然后调用 `LockSupport` 的 `unpark()` 函数唤醒后继结点线程。
 
 ```java
 /**
@@ -723,18 +707,224 @@ private void unparkSuccessor(Node node) {
 }
 ```
 
-将当前结点的后继唤醒。
+## Exclusive Mode
 
-> 这个反向搜索没有看懂
+### Acquire
 
----
+以下函数首先试图以线程安全的方式尝试获取同步状态，如果获取失败，则构造 `EXCLUSIVE` 模式的结点并加入同步队列尾部，最终线程以死循环的方式获取同步状态。如果无法获取到，则阻塞结点中的线程。被阻塞线程只能通过以下两种方式唤醒：
 
-共享模式的锁释放操作。
+* 前驱结点出队，唤醒当前结点
+* 线程被中断
+
+当线程已经从这个函数中返回时，代表线程已经获取到了同步状态。
+
+```java
+/**
+ * Acquires in exclusive mode, ignoring interrupts.  Implemented
+ * by invoking at least once {@link #tryAcquire},
+ * returning on success.  Otherwise the thread is queued, possibly
+ * repeatedly blocking and unblocking, invoking {@link
+ * #tryAcquire} until success.  This method can be used
+ * to implement method {@link Lock#lock}.
+ *
+ * @param arg the acquire argument.  This value is conveyed to
+ *        {@link #tryAcquire} but is otherwise uninterpreted and
+ *        can represent anything you like.
+ */
+public final void acquire(int arg) {
+    if (!tryAcquire(arg) &&
+        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+        selfInterrupt();
+}
+```
+
+结点进入同步队列后，就开始自旋，不断尝试获取同步状态。只有前驱结点是头结点时，才能尝试获取同步状态：
+
+1. 因为头结点线程释放同步状态后才会唤醒后继结点
+2. 维护队列的 FIFO 原则
+
+如果前驱结点是头结点，并且当前结点成功获取到了同步状态，那么就可以把头结点设为自己，并断开前驱结点的 `next` 引用。从而使前驱结点出队，当前结点成功获取到同步状态并成为队头。这里操作 `head` 指针不需要保证线程安全，因为只有当前线程会操作 `head` 指针。
+
+```java
+/**
+ * Acquires in exclusive uninterruptible mode for thread already in
+ * queue. Used by condition wait methods as well as acquire.
+ *
+ * @param node the node
+ * @param arg the acquire argument
+ * @return {@code true} if interrupted while waiting
+ */
+final boolean acquireQueued(final Node node, int arg) {
+    boolean failed = true;
+    try {
+        boolean interrupted = false;
+        for (;;) {
+            final Node p = node.predecessor();
+            if (p == head && tryAcquire(arg)) {
+                setHead(node);
+                p.next = null; // help GC
+                failed = false;
+                return interrupted;
+            }
+            if (shouldParkAfterFailedAcquire(p, node) &&
+                parkAndCheckInterrupt())
+                interrupted = true;
+        }
+    } finally {
+        if (failed)
+            cancelAcquire(node);
+    }
+}
+
+/**
+  * Sets head of queue to be node, thus dequeuing. Called only by
+  * acquire methods.  Also nulls out unused fields for sake of GC
+  * and to suppress unnecessary signals and traversals.
+  *
+  * @param node the node
+  */
+private void setHead(Node node) {
+    head = node;
+    node.thread = null;
+    node.prev = null;
+}
+```
+
+### Release
+
+当线程释放同步状态后，会通过 `unparkSuccessor()` 唤醒后继结点。
+
+```java
+/**
+ * Releases in exclusive mode.  Implemented by unblocking one or
+ * more threads if {@link #tryRelease} returns true.
+ * This method can be used to implement method {@link Lock#unlock}.
+ *
+ * @param arg the release argument.  This value is conveyed to
+ *        {@link #tryRelease} but is otherwise uninterpreted and
+ *        can represent anything you like.
+ * @return the value returned from {@link #tryRelease}
+ */
+public final boolean release(int arg) {
+    if (tryRelease(arg)) {
+        Node h = head;
+        if (h != null && h.waitStatus != 0)
+            unparkSuccessor(h);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Attempts to set the state to reflect a release in exclusive
+ * mode.
+ *
+ * <p>This method is always invoked by the thread performing release.
+ *
+ * <p>The default implementation throws
+ * {@link UnsupportedOperationException}.
+ *
+ * @param arg the release argument. This value is always the one
+ *        passed to a release method, or the current state value upon
+ *        entry to a condition wait.  The value is otherwise
+ *        uninterpreted and can represent anything you like.
+ * @return {@code true} if this object is now in a fully released
+ *         state, so that any waiting threads may attempt to acquire;
+ *         and {@code false} otherwise.
+ * @throws IllegalMonitorStateException if releasing would place this
+ *         synchronizer in an illegal state. This exception must be
+ *         thrown in a consistent fashion for synchronization to work
+ *         correctly.
+ * @throws UnsupportedOperationException if exclusive mode is not supported
+ */
+protected boolean tryRelease(int arg) {
+    throw new UnsupportedOperationException();
+}
+```
+
+## Shared Mode
+
+共享模式与独占模式的区别是，同一时刻是否能有多个线程同时获取到同步状态。
+
+### Acquire
+
+首先调用用户自行实现的 `tryAcquireShared()` 函数试图获取同步状态，返回值 `≥ 0` 意味着成功获取到了同步状态，否则说明获取同步状态失败，进入自旋等待。等待的过程依旧是，当前驱结点是头结点时，试图获取同步状态，如果成功，则从自旋状态下退出。
+
+```java
+/**
+ * Acquires in shared mode, ignoring interrupts.  Implemented by
+ * first invoking at least once {@link #tryAcquireShared},
+ * returning on success.  Otherwise the thread is queued, possibly
+ * repeatedly blocking and unblocking, invoking {@link
+ * #tryAcquireShared} until success.
+ *
+ * @param arg the acquire argument.  This value is conveyed to
+ *        {@link #tryAcquireShared} but is otherwise uninterpreted
+ *        and can represent anything you like.
+ */
+public final void acquireShared(int arg) {
+    if (tryAcquireShared(arg) < 0)
+        doAcquireShared(arg);
+}
+
+/**
+ * Acquires in shared uninterruptible mode.
+ * @param arg the acquire argument
+ */
+private void doAcquireShared(int arg) {
+    final Node node = addWaiter(Node.SHARED);
+    boolean failed = true;
+    try {
+        boolean interrupted = false;
+        for (;;) {
+            final Node p = node.predecessor();
+            if (p == head) {
+                int r = tryAcquireShared(arg);
+                if (r >= 0) {
+                    setHeadAndPropagate(node, r);
+                    p.next = null; // help GC
+                    if (interrupted)
+                        selfInterrupt();
+                    failed = false;
+                    return;
+                }
+            }
+            if (shouldParkAfterFailedAcquire(p, node) &&
+                parkAndCheckInterrupt())
+                interrupted = true;
+        }
+    } finally {
+        if (failed)
+            cancelAcquire(node);
+    }
+}
+```
+
+### Release
+
+共享模式的锁释放操作：
 
 * 通知后继结点
 * 保证锁释放的状态要传递下去
 
 ```java
+/**
+ * Releases in shared mode.  Implemented by unblocking one or more
+ * threads if {@link #tryReleaseShared} returns true.
+ *
+ * @param arg the release argument.  This value is conveyed to
+ *        {@link #tryReleaseShared} but is otherwise uninterpreted
+ *        and can represent anything you like.
+ * @return the value returned from {@link #tryReleaseShared}
+ */
+public final boolean releaseShared(int arg) {
+    if (tryReleaseShared(arg)) {
+        doReleaseShared();
+        return true;
+    }
+    return false;
+}
+
 /**
  * Release action for shared mode -- signals successor and ensures
  * propagation. (Note: For exclusive mode, release just amounts
@@ -771,172 +961,13 @@ private void doReleaseShared() {
 }
 ```
 
----
+## Exclusive Timeout Mode
 
-设置队列的队头。如果后继结点在共享模式等待锁，则传递锁释放的信息。
+### Acquire
 
-```java
-/**
- * Sets head of queue, and checks if successor may be waiting
- * in shared mode, if so propagating if either propagate > 0 or
- * PROPAGATE status was set.
- *
- * @param node the node
- * @param propagate the return value from a tryAcquireShared
- */
-private void setHeadAndPropagate(Node node, int propagate) {
-    Node h = head; // Record old head for check below
-    setHead(node);
-    /*
-     * Try to signal next queued node if:
-     *   Propagation was indicated by caller,
-     *     or was recorded (as h.waitStatus either before
-     *     or after setHead) by a previous operation
-     *     (note: this uses sign-check of waitStatus because
-     *      PROPAGATE status may transition to SIGNAL.)
-     * and
-     *   The next node is waiting in shared mode,
-     *     or we don't know, because it appears null
-     *
-     * The conservatism in both of these checks may cause
-     * unnecessary wake-ups, but only when there are multiple
-     * racing acquires/releases, so most need signals now or soon
-     * anyway.
-     */
-    if (propagate > 0 || h == null || h.waitStatus < 0 ||
-        (h = head) == null || h.waitStatus < 0) {
-        Node s = node.next;
-        if (s == null || s.isShared())
-            doReleaseShared();
-    }
-}
-```
+如果能在指定时间段内获得同步状态则返回 `true`，否则返回 `false`。其本质在于计算剩余需要睡眠的时间间隔 `nanosTimeout`。每当线程被中断意外唤醒时，都需要重新计算剩余的睡眠间隔：`nanosTimeout -= now - lastTime`。如果睡眠间隔大于 `0` 表示还未超时，否则说明已经超时。
 
----
-
-取消结点的等待状态：
-
-```java
-/**
- * Cancels an ongoing attempt to acquire.
- *
- * @param node the node
- */
-private void cancelAcquire(Node node) {
-    // Ignore if node doesn't exist
-    if (node == null)
-        return;
-
-    node.thread = null;
-
-    // Skip cancelled predecessors
-    Node pred = node.prev;
-    while (pred.waitStatus > 0)
-        node.prev = pred = pred.prev;
-
-    // predNext is the apparent node to unsplice. CASes below will
-    // fail if not, in which case, we lost race vs another cancel
-    // or signal, so no further action is necessary.
-    Node predNext = pred.next;
-
-    // Can use unconditional write instead of CAS here.
-    // After this atomic step, other Nodes can skip past us.
-    // Before, we are free of interference from other threads.
-    node.waitStatus = Node.CANCELLED;
-
-    // If we are the tail, remove ourselves.
-    if (node == tail && compareAndSetTail(node, pred)) {
-        compareAndSetNext(pred, predNext, null);
-    } else {
-        // If successor needs signal, try to set pred's next-link
-        // so it will get one. Otherwise wake it up to propagate.
-        int ws;
-        if (pred != head &&
-            ((ws = pred.waitStatus) == Node.SIGNAL ||
-                (ws <= 0 && compareAndSetWaitStatus(pred, ws, Node.SIGNAL))) &&
-            pred.thread != null) {
-            Node next = node.next;
-            if (next != null && next.waitStatus <= 0)
-                compareAndSetNext(pred, predNext, next);
-        } else {
-            unparkSuccessor(node);
-        }
-
-        node.next = node; // help GC
-    }
-}
-```
-
----
-
-不同版本的锁获得操作，区别在于 **互斥** 或 **共享** 模式，以及控制模式 (中断、超时等)。主要处理的是队列操作，以及状态等信息沿链表的传递。在子类实现对锁状态进行修改的函数后，调用下列函数对队列进行操作。
-
-互斥非中断模式:
-
-```java
-/**
- * Acquires in exclusive uninterruptible mode for thread already in
- * queue. Used by condition wait methods as well as acquire.
- *
- * @param node the node
- * @param arg the acquire argument
- * @return {@code true} if interrupted while waiting
- */
-final boolean acquireQueued(final Node node, int arg) {
-    boolean failed = true;
-    try {
-        boolean interrupted = false;
-        for (;;) {
-            final Node p = node.predecessor();
-            if (p == head && tryAcquire(arg)) {
-                setHead(node);
-                p.next = null; // help GC
-                failed = false;
-                return interrupted;
-            }
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                parkAndCheckInterrupt())
-                interrupted = true;
-        }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
-    }
-}
-```
-
-互斥可中断模式:
-
-```java
-/**
- * Acquires in exclusive interruptible mode.
- * @param arg the acquire argument
- */
-private void doAcquireInterruptibly(int arg)
-    throws InterruptedException {
-    final Node node = addWaiter(Node.EXCLUSIVE);
-    boolean failed = true;
-    try {
-        for (;;) {
-            final Node p = node.predecessor();
-            if (p == head && tryAcquire(arg)) {
-                setHead(node);
-                p.next = null; // help GC
-                failed = false;
-                return;
-            }
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                parkAndCheckInterrupt())
-                throw new InterruptedException();
-        }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
-    }
-}
-```
-
-互斥超时模式:
+在一个死循环中，每次试图获取同步状态。如果没能获取成功，就统计一下剩余睡眠时间并判断是否超时。当剩余睡眠时间 `≤ spinForTImeoutTHreshold` (1000ns) 时，线程将不会重新等待，而是直接自旋等待。因为剩下的计时无法做到精确。
 
 ```java
 /**
@@ -947,7 +978,7 @@ private void doAcquireInterruptibly(int arg)
  * @return {@code true} if acquired
  */
 private boolean doAcquireNanos(int arg, long nanosTimeout)
-        throws InterruptedException {
+    throws InterruptedException {
     if (nanosTimeout <= 0L)
         return false;
     final long deadline = System.nanoTime() + nanosTimeout;
@@ -961,121 +992,6 @@ private boolean doAcquireNanos(int arg, long nanosTimeout)
                 p.next = null; // help GC
                 failed = false;
                 return true;
-            }
-            nanosTimeout = deadline - System.nanoTime();
-            if (nanosTimeout <= 0L)
-                return false;
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                nanosTimeout > spinForTimeoutThreshold)
-                LockSupport.parkNanos(this, nanosTimeout);
-            if (Thread.interrupted())
-                throw new InterruptedException();
-        }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
-    }
-}
-```
-
-共享不可中断模式:
-
-```java
-/**
- * Acquires in shared uninterruptible mode.
- * @param arg the acquire argument
- */
-private void doAcquireShared(int arg) {
-    final Node node = addWaiter(Node.SHARED);
-    boolean failed = true;
-    try {
-        boolean interrupted = false;
-        for (;;) {
-            final Node p = node.predecessor();
-            if (p == head) {
-                int r = tryAcquireShared(arg);
-                if (r >= 0) {
-                    setHeadAndPropagate(node, r);
-                    p.next = null; // help GC
-                    if (interrupted)
-                        selfInterrupt();
-                    failed = false;
-                    return;
-                }
-            }
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                parkAndCheckInterrupt())
-                interrupted = true;
-        }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
-    }
-}
-```
-
-共享可中断模式:
-
-```java
-/**
- * Acquires in shared interruptible mode.
- * @param arg the acquire argument
- */
-private void doAcquireSharedInterruptibly(int arg)
-    throws InterruptedException {
-    final Node node = addWaiter(Node.SHARED);
-    boolean failed = true;
-    try {
-        for (;;) {
-            final Node p = node.predecessor();
-            if (p == head) {
-                int r = tryAcquireShared(arg);
-                if (r >= 0) {
-                    setHeadAndPropagate(node, r);
-                    p.next = null; // help GC
-                    failed = false;
-                    return;
-                }
-            }
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                parkAndCheckInterrupt())
-                throw new InterruptedException();
-        }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
-    }
-}
-```
-
-共享超时模式:
-
-```java
-/**
- * Acquires in shared timed mode.
- *
- * @param arg the acquire argument
- * @param nanosTimeout max wait time
- * @return {@code true} if acquired
- */
-private boolean doAcquireSharedNanos(int arg, long nanosTimeout)
-        throws InterruptedException {
-    if (nanosTimeout <= 0L)
-        return false;
-    final long deadline = System.nanoTime() + nanosTimeout;
-    final Node node = addWaiter(Node.SHARED);
-    boolean failed = true;
-    try {
-        for (;;) {
-            final Node p = node.predecessor();
-            if (p == head) {
-                int r = tryAcquireShared(arg);
-                if (r >= 0) {
-                    setHeadAndPropagate(node, r);
-                    p.next = null; // help GC
-                    failed = false;
-                    return true;
-                }
             }
             nanosTimeout = deadline - System.nanoTime();
             if (nanosTimeout <= 0L)
@@ -1107,11 +1023,9 @@ private boolean doAcquireSharedNanos(int arg, long nanosTimeout)
 * `tryReleaseShared()`
 * `isHeldExclusively()`
 
-因为对于这个类来说，它只抽象地知道锁是一个 `int` 类型的原子变量，并不知道其中每一位具体的含义是什么。这是由实现了具体锁的子类定义的：
+因为对于这个类来说，它只抽象地知道锁是一个 `int` 类型的原子变量，并不知道其中每一位具体的含义是什么。这是由实现了具体锁的子类定义的。比如，`int` 中的某一位代表该锁是否被持有...
 
-* 比如，`int` 中的某一位代表该锁是否被持有...
-
-在子类修改锁状态后，该类中的函数再对内部等待队列进行相应的操作。
+在子类实现的函数修改锁状态后，该类中的函数再对内部等待队列进行相应的操作。相当于这个类已经实现了同步队列操作的大致框架，但是有几个核心部分的函数需要由用户来自行实现。用户用不同方式实现后，就能使用各种不同功能的锁。
 
 ---
 

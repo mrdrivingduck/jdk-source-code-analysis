@@ -11,41 +11,6 @@ Nanjing, Jiangsu, China
 ## Definition
 
 ```java
-public class ReentrantLock implements Lock, java.io.Serializable {
-
-}
-```
-
-可重入锁在基本行为上和 `synchronized` 关键字类似，但有更多的功能。可重入锁被上一次成功获得锁但还未释放的线程占有，当锁没有被其它线程持有时，一个线程调用 `lock()` 将会成功返回。如果锁被当前线程持有，该函数将会立刻返回。
-
-该类的构造函数带有一个 **是否公平** 的可选参数 - `fairness`
-
-* 当设定为 `true` 时，当锁被竞争时，等待最久的线程将获得锁 (FIFO)
-* 否则不保证得到锁的顺序
-
-使用公平锁的程序将具有相对低的吞吐率 (slower)，但能够防止饥饿
-
-建议使用方法:
-
-```java
-class X {
-    private final ReentrantLock lock = new ReentrantLock();
-    // ...
-
-    public void m() {
-        lock.lock();  // block until condition holds
-        try {
-            // ... method body
-        } finally {
-            lock.unlock()
-        }
-    }
-}
-```
-
-可重入锁最多支持同一个线程递归上锁 `2147483647` 次
-
-```java
 /**
  * A reentrant mutual exclusion {@link Lock} with the same basic
  * behavior and semantics as the implicit monitor lock accessed using
@@ -112,11 +77,41 @@ class X {
  * @since 1.5
  * @author Doug Lea
  */
+public class ReentrantLock implements Lock, java.io.Serializable {
+
+}
 ```
 
----
+可重入锁在基本行为上和 `synchronized` 关键字类似，但有更多的功能。可重入锁被上一次成功获得锁但还未释放的线程占有，当锁没有被其它线程持有时，一个线程调用 `lock()` 将会成功返回。如果锁被当前线程持有，该函数将会立刻返回。
 
-首先，锁对象内部会维护一个 AQS (Abstract Queued Synchronizer)，作为锁的内部实现。在可重入锁中，AQS 中的原子状态用于表示持有锁的次数。
+该类的构造函数带有一个 **是否公平** 的可选参数 - `fairness`
+
+* 当设定为 `true` 时，当锁被竞争时，等待最久的线程将获得锁 (FIFO)
+* 否则不保证得到锁的顺序
+
+使用公平锁的程序将具有相对低的吞吐率 (slower)，但能够防止饥饿。建议使用方法:
+
+```java
+class X {
+    private final ReentrantLock lock = new ReentrantLock();
+    // ...
+
+    public void m() {
+        lock.lock();  // block until condition holds
+        try {
+            // ... method body
+        } finally {
+            lock.unlock()
+        }
+    }
+}
+```
+
+可重入锁最多支持同一个线程递归上锁 `2147483647` 次。
+
+## AQS
+
+首先，锁对象内部会维护一个 AQS (Abstract Queued Synchronizer)，作为锁的内部实现。在可重入锁中，AQS 中的原子状态用于表示持有锁的次数。由于锁只能被一个线程持有多次，所以要在锁对象内维护当前线程的引用，在加锁或解锁时通过 `getExclusiveOwnerThread()` / `setExclusiveOwnerThread()` 判断是否是当前线程的操作。
 
 ```java
 /** Synchronizer providing all implementation mechanics */
@@ -207,22 +202,24 @@ abstract static class Sync extends AbstractQueuedSynchronizer {
 }
 ```
 
-可以看到，实现了一个非公平的 `nonfairTryAcquire()`
+可以看到，代码实现了一个非公平的 `nonfairTryAcquire()`
 
 * 如果锁没有被占用，则直接获得锁
 * 如果锁被本线程占用，则将自身的状态变量 +1，还限制了最大持有次数
 * 否则返回失败
 
-此外，还实现了一个 `tryRelease()`
+代码还实现了一个 `tryRelease()`
 
 * 递减占用次数
 * 如果占用次数为 0，就将锁置为空闲
 
-> 纵观几个类来看，最基础的是 AbstractOwnableSynchronizer，其中维护了持有锁的 `Thread`。AbstractQueuedSynchronizer 继承了 AOS，其中附加并维护了原子状态变量。最终，ReentrantLock 在类内部继承并维护了一个公平或非公平的 AQS，调用和维护层次是这样的。
+> 纵观几个类来看，调用和维护层次是这样的：最基础的是 AbstractOwnableSynchronizer，其中维护了持有锁的 `Thread`。AbstractQueuedSynchronizer 继承了 AOS，其中附加并维护了原子状态变量。最终，ReentrantLock 在类内部继承并维护了一个公平或非公平的 AQS 同步器。
 
 由于可重入锁支持 **公平锁** 和 **非公平锁**，因此可重入锁内部支持的 AQS 也可以是公平或非公平的。
 
-非公平 AQS:
+### Not Fair AQS
+
+非公平 AQS 比较粗暴，上来就直接 CAS，如果不成功，再调 `acquire` 进入同步队列。这种实现方式下会有较高的吞吐量，因为刚释放锁的线程很可能又能马上再度获取锁，从而避免了线程切换的开销。
 
 ```java
 /**
@@ -248,9 +245,13 @@ static final class NonfairSync extends Sync {
 }
 ```
 
-上来就直接 CAS，如果不成功，再调 `acquire` 进入等待队列。
+### Fair AQS
 
-公平 AQS:
+可以看到，对于公平的 AQS 来说，只有确认同步队列中已经没有前驱结点了，才可能返回 `true`。实现了公平版本的 `tryAcquire()`：
+
+* 严格按照等待队列的 FIFO 顺序进行 CAS
+* 当前锁空闲时，当队列中没有前一个等待结点，且 CAS 成功时，获得锁
+* 如果当前线程已经获得锁，则将状态变量 +1
 
 ```java
 /**
@@ -289,15 +290,9 @@ static final class FairSync extends Sync {
 }
 ```
 
-实现了公平版本的 `tryAcquire()`
+## Constructor
 
-* 严格按照等待队列的 FIFO 顺序进行 CAS
-* 当前锁空闲时，当队列中没有前一个等待结点，且 CAS 成功时，获得锁
-* 如果当前线程已经获得锁，则将状态变量 +1
-
----
-
-构造函数 (默认为非公平版本)
+构造函数 (默认为非公平版本)。
 
 ```java
 /**
@@ -319,13 +314,13 @@ public ReentrantLock(boolean fair) {
 }
 ```
 
----
+## Acquire
 
-获得锁
+获得锁。
 
 * 如果当前线程第一次获得锁，则将锁的状态置为 1
 * 如果当前线程已经获得锁，则将锁的状态 +1
-* 如果锁被另一个线程持有，那么当前线程休眠，并被调度
+* 如果锁被另一个线程持有，那么当前线程进入同步队列阻塞
 
 ```java
 /**
@@ -347,9 +342,7 @@ public void lock() {
 }
 ```
 
----
-
-可被中断地获得锁
+可被中断地获得锁。
 
 ```java
 /**
@@ -402,8 +395,6 @@ public void lockInterruptibly() throws InterruptedException {
     sync.acquireInterruptibly(1);
 }
 ```
-
----
 
 在调用时，如果锁没有被占用，则立刻占用锁。这个一个破坏公平性的插队操作：
 
@@ -520,7 +511,11 @@ public boolean tryLock(long timeout, TimeUnit unit)
 }
 ```
 
----
+## Release
+
+* 如果当前线程占有该锁，那么锁的计数 -1
+* 如果锁的计数已经为 0，那么锁被释放
+* 如果当前线程没有持有锁，则会抛出异常。
 
 ```java
 /**
@@ -539,11 +534,9 @@ public void unlock() {
 }
 ```
 
-如果当前线程占有该锁，那么锁的计数 -1；如果锁的计数已经为 0，那么锁被释放；如果当前线程没有持有锁，则会抛出异常。
+## Condition
 
----
-
-返回当前锁对象所使用的条件对象：
+返回当前锁对象所使用的条件对象，使得锁能够与 `wait()` / `signal()` 机制配合使用。
 
 ```java
 /**
@@ -590,11 +583,9 @@ public Condition newCondition() {
 }
 ```
 
----
+## Others
 
-获得当前锁被持有的次数：
-
-> 仅用于调试
+获得当前锁被持有的次数，仅用于调试。
 
 ```java
 /**
@@ -631,11 +622,7 @@ public int getHoldCount() {
 }
 ```
 
----
-
 查询锁是否被当前线程持有：
-
-> 也是用于调试和测试
 
 ```java
 /**
@@ -684,8 +671,6 @@ public boolean isHeldByCurrentThread() {
 }
 ```
 
----
-
 查询当前锁是否被线程占有：
 
 ```java
@@ -702,8 +687,6 @@ public boolean isLocked() {
 }
 ```
 
----
-
 查看当前锁是否是公平锁：
 
 ```java
@@ -716,8 +699,6 @@ public final boolean isFair() {
     return sync instanceof FairSync;
 }
 ```
-
----
 
 取得持有锁的线程的引用：
 
@@ -740,8 +721,6 @@ protected Thread getOwner() {
 }
 ```
 
----
-
 查询是否有线程正在等待该锁：
 
 ```java
@@ -759,8 +738,6 @@ public final boolean hasQueuedThreads() {
     return sync.hasQueuedThreads();
 }
 ```
-
----
 
 查询给定的线程是否正在等待锁：
 
@@ -781,9 +758,7 @@ public final boolean hasQueuedThread(Thread thread) {
 }
 ```
 
----
-
-获得等待队列的长度：
+获得同步队列的长度：
 
 ```java
 /**
@@ -800,8 +775,6 @@ public final int getQueueLength() {
     return sync.getQueueLength();
 }
 ```
-
----
 
 获得所有正在等待的线程：
 
@@ -826,9 +799,9 @@ protected Collection<Thread> getQueuedThreads() {
 
 ## Summary
 
-*Reentrant* 是可重入性的意思，体现为同一个线程可以多次持有该锁。当锁计数器为 0 时，线程才可以释放锁。可以看到 ReentrantLock 的占用过程中，先进行 CAS 试图占有锁，如果失败，则加入 AQS 的等待队列，所以 ReentrantLock 是一种悲观锁。因为它是互斥的，所以占用不到锁的线程就只能进入休眠，CAS 仅用于解决 **锁有没有被抓住** 这一关键问题。
+*Reentrant* 是可重入性的意思，体现为同一个线程可以多次持有该锁。当锁计数器为 0 时，线程才可以释放锁。可以看到 ReentrantLock 的占用过程中，先进行 CAS 试图占有锁，如果失败，则加入 AQS 的同步队列，所以 ReentrantLock 是一种悲观锁。因为它是互斥的，所以占用不到锁的线程就只能进入休眠，CAS 仅用于解决 **锁有没有被抓住** 这一关键问题。
 
-### 与 `synchronized` 关键字的区别
+与 `synchronized` 关键字的区别：
 
 * 一个实现于 JVM 中，一个实现于 JDK 中
 * 线程在等待 ReentrantLock 时可以被中断，而等待 `synchronized` 不行

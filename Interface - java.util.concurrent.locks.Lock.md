@@ -10,15 +10,15 @@ Nanjing, Jiangsu, China
 
 ## Definition
 
+**锁** 是用于控制多个线程访问共享资源的工具。`synchroinzed` 关键字提供对每个对象的 `monitor` 的隐式访问。所有的锁应当按照获得的顺序被释放 (防止死锁)。
+
 ```java
 public interface Lock {
 
 }
 ```
 
-**锁** 是用于控制多个线程访问共享资源的工具。`synchroinzed` 关键字提供对每个对象的 `monitor` 的隐式访问。所有的锁应当按照获得的顺序被释放 (防止死锁)。
-
-该接口的实现类能够提供更灵活的锁获取和锁释放机制。锁的使用最好遵循:
+该接口的实现类能够提供更灵活的锁获取和锁释放机制。锁的使用应当遵循：
 
 ```java
 Lock l = ...;
@@ -30,7 +30,7 @@ try {
 }
 ```
 
-保证获得锁的代码被 `try-catch` 块保护，以便锁被释放。此外，本接口还提供:
+保证获得锁的代码被 `try-catch` 块保护，以便锁被释放。此外，本接口还提供：
 
 * 非阻塞尝试获得锁的 `tryLock()` 函数
 * 可以被中断的尝试获得锁函数 `lockInterruptibly()`
@@ -169,9 +169,13 @@ try {
  */
 ```
 
-下面看一下所有的 Lock 的函数定义。
-
 ---
+
+## Interfaces
+
+### Lock
+
+获得锁。如果当前的锁不可获得，那么该进程进入 `BLOCKED` 状态并被重新调度，直到锁可被获得。在实现中，应当具有检测错误获得锁的能力 (死锁等)。
 
 ```java
 /**
@@ -192,9 +196,12 @@ try {
 void lock();
 ```
 
-获得锁。如果当前的锁不可获得，那么该进程进入休眠并被重新调度，直到锁可被获得。在实现中，应当具有检测错误获得锁的能力 (死锁等)。
+### Interruptible Lock
 
----
+获得锁，除非当前线程被中断。`lock()` 是不可中断等待锁，`lockInterruptibly()` 是可中断等待锁。如果锁可用，则立刻返回；如果锁不可用，那么当前线程进行重新竞争，直到以下两种事件发生:
+
+1. 锁可以被获得
+2. 其它线程中断了当前线程 - 如果当前线程在等待锁时被中断，则抛出 `InterruptedException` 异常
 
 ```java
 /**
@@ -246,18 +253,9 @@ void lock();
 void lockInterruptibly() throws InterruptedException;
 ```
 
-获得锁，除非当前线程被中断
+### Try Lock
 
-> 意思是 `lock()` 是不可中断等待锁，`lockInterruptibly()` 是可中断等待锁。
-
-如果锁可用，则立刻返回；如果锁不可用，那么当前线程被重新调度，直到以下两种事件发生:
-
-1. 锁可以被获得
-2. 其它线程中断了当前线程
-
-如果当前线程在等待锁时被中断，则抛出 `InterruptedException` 异常。
-
----
+如果锁可用，就获得锁并返回 `true`，如果锁不可用，则立刻返回 `false`。
 
 ```java
 /**
@@ -290,7 +288,7 @@ void lockInterruptibly() throws InterruptedException;
 boolean tryLock();
 ```
 
-在调用时，如果锁可用，就获得锁并返回 `true`，如果锁不可用，则立刻返回 `false`。示例用法:
+示例用法:
 
 ```java
 Lock lock = ...;
@@ -305,7 +303,13 @@ if (lock.tryLock()) {
 }
 ```
 
----
+### Try Lock Timeout
+
+在给定的时间内获得锁。如果锁可以被获得，那么立刻获得锁，并返回 `true`；如果锁暂时不可获得，那么线程进入休眠，直到以下事件之一发生:
+
+1. 锁被当前线程获得
+2. 其它线程中断当前线程 - `InterruptedException` 抛出
+3. 给定的等待时间超时 - 返回 `false`
 
 ```java
 /**
@@ -369,13 +373,9 @@ if (lock.tryLock()) {
 boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
 ```
 
-在给定的时间内获得锁。如果锁可以被获得，那么立刻获得锁，并返回 `true`；如果锁暂时不可获得，那么线程进入休眠，直到以下事件之一发生:
+### Release
 
-1. 锁被当前线程获得
-2. 其它线程中断当前线程 - `InterruptedException` 抛出
-3. 给定的等待时间超时 - 返回 `false`
-
----
+释放锁。
 
 ```java
 /**
@@ -393,9 +393,9 @@ boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
 void unlock();
 ```
 
-释放锁。
+### Condition
 
----
+创建一个 condition 条件变量，用于实现 `await()` / `notify()`。
 
 ```java
 /**
