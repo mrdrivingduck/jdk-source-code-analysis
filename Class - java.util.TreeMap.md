@@ -19,31 +19,20 @@ public class TreeMap<K,V>
 }
 ```
 
-基于红黑树实现的 `NavigableMap`
-
-* Map 基于自然顺序或构造时提供的 `Comparator` 进行排序
-
-对于下列操作保证 `log(n)` 的时间复杂度：
+基于红黑树实现的 `NavigableMap`，Map 基于自然顺序或构造时提供的 `Comparator` 进行排序。对于下列操作保证 `log(n)` 的时间复杂度：
 
 * `containsKey()`
 * `get()`
 * `put()`
 * `remove()`
 
-对于 Map 接口来说，操作使用 `equals()` 函数
+对于 Map 接口来说，操作使用 `equals()` 函数；对于 SortedMap 接口来说，操作使用 `compareTo()` 函数。
 
-对于 SortedMap 接口来说，操作使用 `compareTo()` 函数
+TreeMap 的实现是不同步的，要么封装该集合对象负责实现同步，要么就用 `Collections.synchronizedSortedMap(new TreeMap(...))` 来封装。
 
-TreeMap 的实现是不同步的
+在迭代器迭代过程中，如果 Map 发生结构修改，则会立刻抛出错误，除非使用迭代器自己的 `remove()`。
 
-* 要么封装该集合对象负责实现同步
-* 要么就用 `Collections.synchronizedSortedMap(new TreeMap(...))` 来封装
-
-在迭代器迭代过程中，如果 Map 发生结构修改，则会立刻抛出错误
-
-* 除非使用迭代器自己的 `remove()`
-
-所有函数中返回的 `Map.Entry<>` 都是映射的快照
+所有函数中返回的 `Map.Entry<>` 都是映射的快照：
 
 * 不支持 `Entry.setValue()`
 * 只能使用 `put()` 来改变映射
@@ -130,6 +119,10 @@ TreeMap 的实现是不同步的
 
 ---
 
+## Fields
+
+用于维护 Map 的 size，以及 Map 的根结点。
+
 ```java
 /**
  * The comparator used to maintain order in this tree map, or
@@ -152,15 +145,9 @@ private transient int size = 0;
 private transient int modCount = 0;
 ```
 
-局部变量
+## Constructor
 
-主要维护 Map 的 size
-
-以及 Map 的根结点
-
----
-
-构造函数
+构造函数，创建一个新的空集合，并组织为 key 的自然排列顺序。
 
 ```java
 /**
@@ -180,7 +167,7 @@ public TreeMap() {
 }
 ```
 
-创建一个新的空集合，并组织为 key 的自然排列顺序
+构造函数，创建新的空集合，并用 `Comparator` 组织 key 的排列。
 
 ```java
 /**
@@ -202,7 +189,7 @@ public TreeMap(Comparator<? super K> comparator) {
 }
 ```
 
-创建新的空集合，并用 `Comparator` 组织 key 的排列
+用一个已有的 Map 构造 TreeMap，按照自然顺序来组织 key，将 Map 中的每一个元素放入 TreeMap 中。
 
 ```java
 /**
@@ -225,9 +212,7 @@ public TreeMap(Map<? extends K, ? extends V> m) {
 }
 ```
 
-用一个已有的 Map 构造 TreeMap
-
-按照自然顺序来组织 key，将 Map 中的每一个元素放入 TreeMap 中
+用另一个 SortedMap 来构造 TreeMap，使用 SortedMap 的 `Comparator` 来组织 key 的排列，从而具有相同的 key 顺序。
 
 ```java
 /**
@@ -249,15 +234,12 @@ public TreeMap(SortedMap<K, ? extends V> m) {
 }
 ```
 
-用另一个 SortedMap 来构造 TreeMap
+## Node
 
-使用 SortedMap 的 `Comparator` 来组织 key 的排列
+红黑树结点的定义。给定父结点、key、value 可以构造一个新结点：
 
-从而具有相同的 key 顺序
-
----
-
-红黑树结点的定义：
+* 孩子指针为 `null`
+* 结点默认颜色为黑色
 
 ```java
 // Red-black mechanics
@@ -341,12 +323,14 @@ static final class Entry<K,V> implements Map.Entry<K,V> {
 }
 ```
 
-给定父结点、key、value 可以构造一个新结点
+## Tree Operations
 
-* 孩子指针为 `null`
-* 结点默认颜色为黑色
+返回后下一个 entry
 
----
+* 首先寻找右子树的最左下结点
+* 如果没有右子树，则需要回溯到 parent 结点
+    * 如果当前结点为 parent 的左子树，下一个 entry 应当就是 parent 的 entry
+    * 如果当前结点为 parent 的右子树，则需要一直向上回溯，直到该子树为某个结点的左子树为止，该结点就是下一个结点
 
 ```java
 /**
@@ -372,13 +356,12 @@ static <K,V> TreeMap.Entry<K,V> successor(Entry<K,V> t) {
 }
 ```
 
-返回后一个 entry
+返回前一个 entry
 
-* 首先寻找右子树的最左下结点
-* 如果没有右子树，则需要回溯到 parent 结点
-    * 如果当前结点为 parent 的左子树，下一个 entry 应当就是 parent 的 entry
-    * 如果当前结点为 parent 的右子树，则需要一直向上回溯，直到该子树为某个结点的左子树为止
-        * 该结点就是下一个结点
+* 首先寻找左子树的最右下结点
+* 如果没有左子树，则向 parent 回溯
+    * 如果当前结点为 parent 的右子树，那么 parent 的 entry 就是前一个 entry
+    * 如果当前结点为 parent 的左子树，那么需要一直回溯，直到子树成为某个结点的右子树为止，该结点就是前一个结点
 
 ```java
 /**
@@ -404,15 +387,10 @@ static <K,V> Entry<K,V> predecessor(Entry<K,V> t) {
 }
 ```
 
-返回前一个 entry
+红黑树操作的辅助函数
 
-* 首先寻找左子树的最右下结点
-* 如果没有左子树，则向 parent 回溯
-    * 如果当前结点为 parent 的右子树，那么 parent 的 entry 就是前一个 entry
-    * 如果当前结点为 parent 的左子树，那么需要一直回溯，直到子树成为某个结点的右子树为止
-        * 该结点就是前一个结点
-
----
+* 返回或设置颜色
+* 返回左子树 / 右子树 / 父结点
 
 ```java
 /**
@@ -447,10 +425,12 @@ private static <K,V> Entry<K,V> rightOf(Entry<K,V> p) {
 }
 ```
 
-红黑树操作的辅助函数
+具体的红黑树操作函数
 
-* 返回或设置颜色
-* 返回左子树 / 右子树 / 父结点
+* 左旋 / 右旋
+* 插入和删除后的修复平衡性操作
+
+不是说写得不好，~~只能说是没啥可读性了~~。
 
 ```java
 /** From CLR */
@@ -646,14 +626,9 @@ private void fixAfterDeletion(Entry<K,V> x) {
 }
 ```
 
-具体的红黑树操作函数
+这是一个递归函数，`lo` 和 `hi` 分别表示该树的第一个元素和最后一个元素。分别构造左右子树，并设置子树与父结点之间的引用关系，返回中间结点。递归结束后，函数最终返回 root 结点。
 
-* 左旋 / 右旋
-* 插入和删除后的修复平衡性操作
-
-不是说写得不好，~~只能说是没啥可读性了~~
-
----
+> 关于红黑树的具体细节不想看了... 😣
 
 ```java
 /**
@@ -776,17 +751,7 @@ private final Entry<K,V> buildFromSorted(int level, int lo, int hi,
 }
 ```
 
-这是一个递归函数
-
-* `lo` 和 `hi` 分别表示该树的第一个元素和最后一个元素
-
-分别构造左右子树，并设置子树与父结点之间的引用关系，返回中间结点
-
-递归结束后，函数最终返回 root 结点
-
-> 关于红黑树的具体细节不想看了 😣
-
----
+查找 Map 中是否存在某个 key，以及，取得某个 key 对应的 value。这两个操作都需要从 root 结点出发进行搜索。
 
 ```java
 /**
@@ -836,12 +801,6 @@ public V get(Object key) {
 }
 ```
 
-查找 Map 中是否存在某个 key
-
-以及，取得某个 key 对应的 value
-
-这两个操作都需要从 root 结点出发进行搜索
-
 ```java
 /**
  * Returns this map's entry for the given key, or {@code null} if the map
@@ -876,6 +835,17 @@ final Entry<K,V> getEntry(Object key) {
     return null;
 }
 
+根据 `Comparator` 是否为 `null`，选择调用两个版本的查找
+    * 自然顺序版本 - 使用 key 的 `compareTo()` 进行比较
+    * 使用 `Comparator` 比较的版本 - 使用 `Comparator` 的 `compare()` 进行比较
+
+从 root 结点开始比较：
+
+* 如果 key 比当前结点小，则进入左子树 (或 `null`)
+* 如果 key 比当前结点大，则进入右子树 (或 `null`)
+* 如果 key 相同，则找到
+* 否则就是 `null` (不存在)
+
 /**
  * Version of getEntry using comparator. Split off from getEntry
  * for performance. (This is not worth doing for most methods,
@@ -902,18 +872,7 @@ final Entry<K,V> getEntryUsingComparator(Object key) {
 }
 ```
 
-* 根据 `Comparator` 是否为 `null`，选择调用两个版本的查找
-    * 自然顺序版本 - 使用 key 的 `compareTo()` 进行比较
-    * 使用 `Comparator` 比较的版本 - 使用 `Comparator` 的 `compare()` 进行比较
-
-从 root 结点开始比较
-
-* 如果 key 比当前结点小，则进入左子树 (或 `null`)
-* 如果 key 比当前结点大，则进入右子树 (或 `null`)
-* 如果 key 相同，则找到
-* 否则就是 `null` (不存在)
-
----
+查找 Map 中是否存在某个 value。由于 Map 按 key 排序，与 value 的值半毛钱关系都没有。没办法，只能线性搜素。
 
 ```java
 /**
@@ -937,13 +896,7 @@ public boolean containsValue(Object value) {
 }
 ```
 
-查找 Map 中是否存在某个 value
-
-由于 Map 按 key 排序，与 value 的值毛关系都没有
-
-没办法，你就线性搜索吧
-
----
+遍历至最左下和最右下结点，分别取得第一个和最后一个 entry 或 key。
 
 ```java
 /**
@@ -997,11 +950,9 @@ final Entry<K,V> getLastEntry() {
 }
 ```
 
-遍历至最左下和最右下结点
+将指定的 Map 中的所有元素拷贝到现在的 Map 中，并替换 Map 中已经出现的 entry。其中，对 `Comparator` 相同的 SortedMap 进行了特殊处理。
 
-分别取得第一个和最后一个 entry 或 key
-
----
+> ？为啥呢
 
 ```java
 /**
@@ -1035,15 +986,17 @@ public void putAll(Map<? extends K, ? extends V> map) {
 }
 ```
 
-将指定的 Map 中的所有元素拷贝到现在的 Map 中
+插入操作
 
-并替换 Map 中已经出现的 entry
-
-其中，对 `Comparator` 相同的 SortedMap 进行了特殊处理
-
-> ？为啥呢
-
----
+* 首先定位到 root 结点
+    * 如果 root 结点为空，那么直接建立新结点作为 root 并返回 `null`
+* 根据 `Comparator` 是否为 `null`，进行两种不同版本的比较
+    * 用各自的比较函数进行比较，进入左右子树
+    * 如果已经找到对应的 key，则用 `setValue()` 将原值替换
+    * 如果因为 `null` 而停止
+        * 建立新的结点
+        * 并根据停止条件，插入为 parent 结点的左子树或右子树
+        * 调 `fixAfterInsertion()` 红黑树合法性调整
 
 ```java
 /**
@@ -1118,19 +1071,13 @@ public V put(K key, V value) {
 }
 ```
 
-插入操作
+删除操作
 
-* 首先定位到 root 结点
-    * 如果 root 结点为空，那么直接建立新结点作为 root 并返回 `null`
-* 根据 `Comparator` 是否为 `null`，进行两种不同版本的比较
-    * 用各自的比较函数进行比较，进入左右子树
-    * 如果已经找到对应的 key，则用 `setValue()` 将原值替换
-    * 如果因为 `null` 而停止
-        * 建立新的结点
-        * 并根据停止条件，插入为 parent 结点的左子树或右子树
-        * 调 `fixAfterInsertion()` 红黑树合法性调整
+首先根据 key 找到对应的 entry
 
----
+* 如果不存在该 entry，直接返回皆大欢喜
+* 如果存在，那么用一个变量暂存 value 用于返回，然后调 `deleteEntry()` 删除 entry，并重新调用 `fixAfterDeletion()` 调整红黑树合法性
+* 返回被删除的 entry 中的 value
 
 ```java
 /**
@@ -1158,16 +1105,7 @@ public V remove(Object key) {
 }
 ```
 
-删除操作
-
-首先根据 key 找到对应的 entry
-
-* 如果不存在该 entry，直接返回皆大欢喜
-* 如果存在，那么用一个变量暂存 value 用于返回，然后调 `deleteEntry()` 删除 entry
-    * 在 `deleteEntry()` 中会调用 `fixAfterDeletion()` 调整红黑树合法性
-* 返回被删除的 entry 中的 value
-
----
+清空映射。
 
 ```java
 /**
@@ -1181,9 +1119,10 @@ public void clear() {
 }
 ```
 
-清空映射
+浅拷贝一份 TreeMap
 
----
+* 实例化一个处女状态的 TreeMap
+* 用现有的 entry 重新构建一个 TreeMap 并返回
 
 ```java
 /**
@@ -1219,12 +1158,10 @@ public Object clone() {
 }
 ```
 
-浅拷贝一份 TreeMap
+删除第一个或最后一个 entry
 
-* 实例化一个处女状态的 TreeMap
-* 用现有的 entry 重新构建一个 TreeMap 并返回
-
----
+* 首先找到第一个或最后一个 entry
+* 调 `deleteEntry()` 删除，并自动调整红黑树
 
 ```java
 /**
@@ -1250,12 +1187,17 @@ public Map.Entry<K,V> pollLastEntry() {
 }
 ```
 
-删除第一个或最后一个 entry
+返回小于给定 key 的最大 entry 及其 key。从 root 结点开始搜索
 
-* 首先找到第一个或最后一个 entry
-* 调 `deleteEntry()` 删除，并自动调整红黑树
-
----
+* 如果 key 已经大于当前结点
+    * 需要往当前结点的右子树寻找 (尽可能接近 key 的结点)
+    * 如果没有右子树，该结点就是小于 key 的最大结点，返回
+* 如果 key 小于当前结点
+    * 需要往当前结点的左子树寻找 (尽可能接近 key 的结点)
+    * 如果没有左子树
+        * 回溯，直到找到一个有左子树的祖先 (祖先肯定比 key 小，不然不会进行到当前层)
+        * 该祖先就是小于 key 且最大的结点，返回
+* 不然就返回 `null`
 
 ```java
 /**
@@ -1314,22 +1256,7 @@ final Entry<K,V> getLowerEntry(K key) {
 }
 ```
 
-返回小于给定 key 的最大 entry 及其 key
-
-从 root 结点开始搜索
-
-* 如果 key 已经大于当前结点
-    * 需要往当前结点的右子树寻找 (尽可能接近 key 的结点)
-    * 如果没有右子树
-        * 该结点就是小于 key 的最大结点，返回
-* 如果 key 小于当前结点
-    * 需要往当前结点的左子树寻找 (尽可能接近 key 的结点)
-    * 如果没有左子树
-        * 回溯，直到找到一个有左子树的祖先 (祖先肯定比 key 小，不然不会进行到当前层)
-        * 该祖先就是小于 key 且最大的结点，返回
-* 不然就返回 `null`
-
----
+返回指定 key 的 entry，如果不存在，就返回小于 key 的最大 entry。与前一个函数的差别在于在进入左右子树时，如果 key 相等就直接返回；否则就还是寻找比 key 小的最大 entry。
 
 ```java
 /**
@@ -1390,15 +1317,16 @@ final Entry<K,V> getFloorEntry(K key) {
 }
 ```
 
-返回指定 key 的 entry
+从 root 结点开始搜索
 
-如果不存在，就返回小于 key 的最大 entry
-
-与前一个函数的差别在于在进入左右子树时，如果 key 相等就直接返回
-
-否则就还是寻找比 key 小的最大 entry
-
----
+* 若当前结点已经大于 key
+    * 那么就找当前结点的左子树，以便尽可能接近 key
+    * 如果当前结点没有左子树，那么当前结点就是大于 key 的最小结点，返回
+* 若当前元素还小于 key
+    * 就往当前结点的右子树找，以便尽可能接近 key
+    * 若当前结点没有右子树了，而元素还小于 key
+        * 那么就要一直回溯，直到结点有右子树为止 (这个结点肯定比 key 大，因为之前 key 进入其左子树)
+        * 该结点就是大于 key 的最小结点，返回
 
 ```java
 /**
@@ -1459,18 +1387,7 @@ final Entry<K,V> getHigherEntry(K key) {
 }
 ```
 
-从 root 结点开始搜索
-
-* 若当前结点已经大于 key
-    * 那么就找当前结点的左子树，以便尽可能接近 key
-    * 如果当前结点没有左子树，那么当前结点就是大于 key 的最小结点，返回
-* 若当前元素还小于 key
-    * 就往当前结点的右子树找，以便尽可能接近 key
-    * 若当前结点没有右子树了，而元素还小于 key
-        * 那么就要一直回溯，直到结点有右子树为止 (这个结点肯定比 key 大，因为之前 key 进入其左子树)
-        * 该结点就是大于 key 的最小结点，返回
-
----
+返回指定的 key 对应的 entry，如果不存在，则返回大于 key 的最小 entry。与前一个函数基本相同，就是多了个 key 与当前结点相同时直接返回。
 
 ```java
 /**
@@ -1531,13 +1448,11 @@ final Entry<K,V> getCeilingEntry(K key) {
 }
 ```
 
-返回指定的 key 对应的 entry
+集合视角
 
-如果不存在，则返回大于 key 的最小 entry
-
-与前一个函数基本相同，就是多了个 key 与当前结点相同时直接返回
-
----
+* 在内部维护这三个变量
+* 懒加载，这三个变量在被请求时才会被初始化
+* 这三个变量又分别在内部维护了整个集合，好像有种传说中的自引用关系... 😥
 
 ```java
 /**
@@ -1550,13 +1465,7 @@ private transient KeySet<K> navigableKeySet;
 private transient NavigableMap<K,V> descendingMap;
 ```
 
-集合视角
-
-* 在内部维护这三个变量
-* 懒加载，这三个变量在被请求时才会被初始化
-* 这三个变量又分别在内部维护了整个集合，好像有种传说中的自引用关系... 😥
-
-以 keySet 的维护为例：
+以 keySet 的维护为例。对集合的操作也会体现在 keySet 上，对 keySet 的操作也会体现在集合上；在 keySet 上的操作都使用集合的函数实现。dd对 value 集合的维护：
 
 ```java
 /**
@@ -1588,7 +1497,7 @@ public Set<K> keySet() {
     return navigableKeySet();
 }
 
-/**
+/**dddd
  * @since 1.6
  */
 public NavigableSet<K> navigableKeySet() {
@@ -1668,14 +1577,6 @@ static final class KeySet<E> extends AbstractSet<E> implements NavigableSet<E> {
 }
 ```
 
-所以，对集合的操作也会体现在 keySet 上
-
-对 keySet 的操作也会体现在集合上
-
-* 在 keySet 上的操作都使用集合的函数实现
-
-对 value 集合的维护：
-
 ```java
 /**
  * Returns a {@link Collection} view of the values contained in this map.
@@ -1740,7 +1641,9 @@ class Values extends AbstractCollection<V> {
 }
 ```
 
-对于 entrySet 的维护：
+对于 entrySet 的维护。
+
+> 不知道理解得到不到位。这些类的存在，只是为了给用户一种视角：有只关心 key 的视角，有只关心 value 的视角，也有只关心 entry 的视角。而针对视角所做的操作，都由 Map 提供的函数在内部加以实现，这部分对用户透明。不过自己引用自己确实要给绕晕了...... 😫
 
 ```java
 /**
@@ -1811,17 +1714,7 @@ class EntrySet extends AbstractSet<Map.Entry<K,V>> {
 }
 ```
 
-> 不知道理解得到不到位
->
-> 这些类的存在，只是为了给用户一种视角
->
-> 有只关心 key 的视角，有只关心 value 的视角，也有只关心 entry 的视角
->
-> 而针对视角所做的操作，都由 Map 提供的函数在内部加以实现，这部分对用户透明
->
-> 不过自己引用自己确实要给绕晕了...... 😫
-
----
+替换操作，底层由 `getEntry()` 支持。先找到对应的 entry，然后判断条件并替换。
 
 ```java
 @Override
@@ -1846,11 +1739,7 @@ public V replace(K key, V value) {
 }
 ```
 
-替换操作，底层由 `getEntry()` 支持
-
-先找到对应的 entry，然后判断条件并替换
-
----
+遍历每一个 entry，并应用对应的操作。
 
 ```java
 @Override
@@ -1881,9 +1770,12 @@ public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
 }
 ```
 
-遍历每一个 entry，并应用对应的操作
+## Sub-Collections
 
----
+取子集的函数
+
+* 由于集合有序，只需要指明 **边界** 和 **是否包含边界**
+* 子集内部维护集合本身，也是自引用，但需要额外维护 **子集范围**
 
 ```java
 /**
@@ -1963,10 +1855,10 @@ public SortedMap<K,V> tailMap(K fromKey) {
 }
 ```
 
-取子集的函数
+从该类派生出两个实现类，分别实现正序子集和反序子集：
 
-* 由于集合有序，只需要指明 __边界__ 和 __是否包含边界__
-* 子集内部维护集合本身，也是自引用，但需要额外维护 __子集范围__
+* `static final class AscendingSubMap<K,V> extends NavigableSubMap<K,V> {}`
+* `static final class DescendingSubMap<K,V> extends NavigableSubMap<K,V> {}`
 
 ```java
 /**
@@ -2476,24 +2368,11 @@ abstract static class NavigableSubMap<K,V> extends AbstractMap<K,V>
 }
 ```
 
-从该类派生出两个实现类，分别实现正序子集和反序子集：
-
-* `static final class AscendingSubMap<K,V> extends NavigableSubMap<K,V> {}`
-* `static final class DescendingSubMap<K,V> extends NavigableSubMap<K,V> {}`
-
 ---
 
 ## Summary
 
-em...够复杂的人要晕了
-
-关于集合视角也好、正反视角也好，其实都是封装
-
-最主要的还是要把握红黑树这一核心实现思想
-
-只需要知道内部有一颗增删改查性能都为 `O(log(n))` 的 BST 即可
-
-在这一前提下，实现所有的基本操作也就是对 BST 进行增删改查、遍历咯
+em...够复杂的人要晕了。关于集合视角也好、正反视角也好，其实都是封装。最主要的还是要把握红黑树这一核心实现思想，只需要知道内部有一颗增删改查性能都为 `O(log(n))` 的 BST 即可。在这一前提下，实现所有的基本操作，也就是对 BST 进行增删改查、遍历。
 
 ---
 
