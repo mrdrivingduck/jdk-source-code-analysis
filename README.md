@@ -90,12 +90,12 @@ Analyze the implementation details of JDK 8.
 | `java.util.concurrent.PriorityBlockingQueue`          | / |
 | `java.util.concurrent.LinkedTransferQueue`            | [link](Class%20%2d%20java.util.concurrent.LinkedTransferQueue.md) |
 | `java.util.concurrent.SynchronousQueue`               | [link](Class%20%2d%20java.util.concurrent.SynchronousQueue.md) |
-| `java.util.concurrent.DelayQueue         `            | [link](Class%20%2d%20java.util.concurrent.DelayQueue.md) |
+| `java.util.concurrent.DelayQueue`                     | [link](Class%20%2d%20java.util.concurrent.DelayQueue.md) |
 | `java.util.concurrent.ConcurrentLinkedQueue`          | [link](Class%20%2d%20java.util.concurrent.ConcurrentLinkedQueue.md) |
 | `java.util.concurrent.ConcurrentLinkedDeque`          | / |
 | `java.util.concurrent.ThreadPoolExecutor`             | [link](Class%20%2d%20java.util.concurrent.ThreadPoolExecutor.md) |
 
-## Java Lang Class
+## Java Language Class
 
 ### Abstract Classes
 
@@ -105,10 +105,11 @@ Analyze the implementation details of JDK 8.
 
 ### Classes
 
-| Class               | Link                                       |
-| ------------------- | ------------------------------------------ |
-| `java.lang.Integer` | [link](Class%20%2d%20java.lang.Integer.md) |
-| `java.lang.String`  | [link](Class%20%2d%20java.lang.String.md)  |
+| Class                    | Link                                            |
+| ------------------------ | ----------------------------------------------- |
+| `java.lang.Integer`      | [link](Class%20%2d%20java.lang.Integer.md)      |
+| `java.lang.String`       | [link](Class%20%2d%20java.lang.String.md)       |
+| `java.lang.ThreadLocal`  | [link](Class%20%2d%20java.lang.ThreadLocal.md)  |
 
 ## I/O
 
