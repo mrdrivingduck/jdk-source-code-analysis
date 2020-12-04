@@ -121,10 +121,11 @@ Analyze the implementation details of JDK 8.
 
 ### Abstract Classes
 
-| Class                 | Link                                                    |
-| --------------------- | ------------------------------------------------------- |
-| `java.io.InputStream` | [link](Abstract%20Class%20%2d%20java.io.InputStream.md) |
-| `java.io.Reader`      | [link](Abstract%20Class%20%2d%20java.io.Reader.md) |
+| Class                  | Link                                                     |
+| ---------------------  | -------------------------------------------------------  |
+| `java.io.InputStream`  | [link](Abstract%20Class%20%2d%20java.io.InputStream.md)  |
+| `java.io.OutputStream` | [link](Abstract%20Class%20%2d%20java.io.OutputStream.md) |
+| `java.io.Reader`       | [link](Abstract%20Class%20%2d%20java.io.Reader.md)       |
 
 ### Classes
 
