@@ -132,6 +132,7 @@ Analyze the implementation details of JDK 8.
 | Class                                | Link                                             |
 | ------------------------------------ | ------------------------------------------------ |
 | `java.io.FileInputStream`            | [link](Class%20%2d%20java.io.FileInputStream.md) |
+| `java.io.FileOutputStream`           | [link](Class%20%2d%20java.io.FileOutputStream.md) |
 | `java.io.FilterInputStream`          | [link](Class%20%2d%20java.io.FilterInputStream.md) |
 | `java.io.FilterOutputStream`         | [link](Class%20%2d%20java.io.FilterOutputStream.md) |
 | `java.io.DataInputStream`            | [link](Class%20%2d%20java.io.DataInputStream.md) |
