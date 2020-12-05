@@ -138,6 +138,7 @@ Analyze the implementation details of JDK 8.
 | `java.io.BufferedInputStream`        | [link](Class%20%2d%20java.io.BufferedInputStream.md) |
 | `java.io.BufferedOutputStream`       | [link](Class%20%2d%20java.io.BufferedOutputStream.md) |
 | `java.io.ByteArrayInputStream`       | [link](Class%20%2d%20java.io.ByteArrayInputStream.md) |
+| `java.io.ByteArrayOutputStream`      | [link](Class%20%2d%20java.io.ByteArrayOutputStream.md) |
 | `java.io.PushbackInputStream`        | [link](Class%20%2d%20java.io.PushbackInputStream.md) |
 | `java.io.SequenceInputStream`        | [link](Class%20%2d%20java.io.SequenceInputStream.md) |
 | `java.io.InputStreamReader`          | [link](Class%20%2d%20java.io.InputStreamReader.md) |
