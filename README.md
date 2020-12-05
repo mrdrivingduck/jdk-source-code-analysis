@@ -129,18 +129,20 @@ Analyze the implementation details of JDK 8.
 
 ### Classes
 
-| Class                     | Link                                             |
-| ------------------------- | ------------------------------------------------ |
-| `java.io.FileInputStream` | [link](Class%20%2d%20java.io.FileInputStream.md) |
-| `java.io.FilterInputStream` | [link](Class%20%2d%20java.io.FilterInputStream.md) |
-| `java.io.DataInputStream` | [link](Class%20%2d%20java.io.DataInputStream.md) |
-| `java.io.BufferedInputStream` | [link](Class%20%2d%20java.io.BufferedInputStream.md) |
-| `java.io.ByteArrayInputStream` | [link](Class%20%2d%20java.io.ByteArrayInputStream.md) |
-| `java.io.PushbackInputStream` | [link](Class%20%2d%20java.io.PushbackInputStream.md) |
-| `java.io.SequenceInputStream` | [link](Class%20%2d%20java.io.SequenceInputStream.md) |
-| `java.io.InputStreamReader` | [link](Class%20%2d%20java.io.InputStreamReader.md) |
-| `java.io.FileReader` | [link](Class%20%2d%20java.io.FileReader.md) |
-| `java.io.BufferedReader` | [link](Class%20%2d%20java.io.BufferedReader.md) |
+| Class                                | Link                                             |
+| ------------------------------------ | ------------------------------------------------ |
+| `java.io.FileInputStream`            | [link](Class%20%2d%20java.io.FileInputStream.md) |
+| `java.io.FilterInputStream`          | [link](Class%20%2d%20java.io.FilterInputStream.md) |
+| `java.io.FilterOutputStream`         | [link](Class%20%2d%20java.io.FilterOutputStream.md) |
+| `java.io.DataInputStream`            | [link](Class%20%2d%20java.io.DataInputStream.md) |
+| `java.io.BufferedInputStream`        | [link](Class%20%2d%20java.io.BufferedInputStream.md) |
+| `java.io.BufferedOutputStream`       | [link](Class%20%2d%20java.io.BufferedOutputStream.md) |
+| `java.io.ByteArrayInputStream`       | [link](Class%20%2d%20java.io.ByteArrayInputStream.md) |
+| `java.io.PushbackInputStream`        | [link](Class%20%2d%20java.io.PushbackInputStream.md) |
+| `java.io.SequenceInputStream`        | [link](Class%20%2d%20java.io.SequenceInputStream.md) |
+| `java.io.InputStreamReader`          | [link](Class%20%2d%20java.io.InputStreamReader.md) |
+| `java.io.FileReader`                 | [link](Class%20%2d%20java.io.FileReader.md) |
+| `java.io.BufferedReader`             | [link](Class%20%2d%20java.io.BufferedReader.md) |
 
 ---
 
