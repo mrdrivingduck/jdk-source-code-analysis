@@ -136,6 +136,7 @@ Analyze the implementation details of JDK 8.
 | `java.io.FilterInputStream`          | [link](Class%20%2d%20java.io.FilterInputStream.md) |
 | `java.io.FilterOutputStream`         | [link](Class%20%2d%20java.io.FilterOutputStream.md) |
 | `java.io.DataInputStream`            | [link](Class%20%2d%20java.io.DataInputStream.md) |
+| `java.io.DataOutputStream`           | [link](Class%20%2d%20java.io.DataOutputStream.md) |
 | `java.io.BufferedInputStream`        | [link](Class%20%2d%20java.io.BufferedInputStream.md) |
 | `java.io.BufferedOutputStream`       | [link](Class%20%2d%20java.io.BufferedOutputStream.md) |
 | `java.io.ByteArrayInputStream`       | [link](Class%20%2d%20java.io.ByteArrayInputStream.md) |
