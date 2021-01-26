@@ -19,19 +19,9 @@ public class HashSet<E>
 }
 ```
 
-内部实际上维护一个 HashMap
+内部实际上维护一个 HashMap，不保证迭代顺序，允许 `null` 元素。如果元素散列在桶中，该集合提供常数时间的基本操作，迭代整个集合需要内部维护的 HashMap 的 `capacity` 和 `size` 加起来的时间。因此，如果迭代性能很重要，初始容量不应设置过大。
 
-不保证迭代顺序
-
-允许 `null` 元素
-
-如果元素散列在桶中，该集合提供常数时间的基本操作
-
-迭代整个集合需要内部维护的 HashMap 的 `capacity` 和 `size` 加起来的时间
-
-* 因此，如果迭代性能很重要，初始容量不应设置过大
-
-该实现是线程不安全的
+该实现是线程不安全的：
 
 * 要么在外部被同步
 * 要么 - `Set s = Collections.synchronizedSet(new HashSet(...));`
@@ -97,7 +87,12 @@ public class HashSet<E>
  */
 ```
 
----
+## Fields
+
+成员变量，内部维护一个 HashMap：
+
+* key 用于存放 Set 的实际元素
+* value 是一个 "哑" 的对象，没卵用的
 
 ```java
 static final long serialVersionUID = -5024744406713321676L;
@@ -108,14 +103,9 @@ private transient HashMap<E,Object> map;
 private static final Object PRESENT = new Object();
 ```
 
-成员变量
+## Constructor
 
-内部维护一个 HashMap
-
-* key 用于存放 Set 的实际元素
-* value 是一个 "哑" 的对象，没卵用的
-
----
+构造函数，调用 HashMap 的构造函数，构造内部的 HashMap。
 
 ```java
 /**
@@ -166,9 +156,9 @@ public HashSet(int initialCapacity) {
 }
 ```
 
-构造函数，调用 HashMap 的构造函数，构造内部的 HashMap
+## Iterator
 
----
+返回 HashMap keySet 的迭代器。
 
 ```java
 /**
@@ -183,9 +173,7 @@ public Iterator<E> iterator() {
 }
 ```
 
-返回 HashMap keySet 的迭代器
-
----
+## Collection Status
 
 ```java
 /**
@@ -220,7 +208,7 @@ public boolean contains(Object o) {
 }
 ```
 
----
+## Modification
 
 ```java
 /**
@@ -264,7 +252,9 @@ public void clear() {
 }
 ```
 
----
+## Clone
+
+克隆内部的 HashMap (浅拷贝)。
 
 ```java
 /**
@@ -284,10 +274,6 @@ public Object clone() {
     }
 }
 ```
-
-克隆内部的 HashMap
-
-浅拷贝
 
 ---
 
