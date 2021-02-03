@@ -143,6 +143,8 @@ Analyze the implementation details of JDK 8.
 | `java.io.ByteArrayOutputStream`      | [link](java.io/Class%20%2d%20java.io.ByteArrayOutputStream.md) |
 | `java.io.PushbackInputStream`        | [link](java.io/Class%20%2d%20java.io.PushbackInputStream.md) |
 | `java.io.SequenceInputStream`        | [link](java.io/Class%20%2d%20java.io.SequenceInputStream.md) |
+| `java.io.PipedInputStream`           | [link](java.io/Class%20%2d%20java.io.PipedInputStream.md) |
+| `java.io.PipedOutputStream`          | [link](java.io/Class%20%2d%20java.io.PipedOutputStream.md) |
 | `java.io.InputStreamReader`          | [link](java.io/Class%20%2d%20java.io.InputStreamReader.md) |
 | `java.io.FileReader`                 | [link](java.io/Class%20%2d%20java.io.FileReader.md) |
 | `java.io.BufferedReader`             | [link](java.io/Class%20%2d%20java.io.BufferedReader.md) |
