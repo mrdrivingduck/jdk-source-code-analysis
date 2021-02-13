@@ -129,7 +129,7 @@ private static boolean isRunning(int c) {
 * `TIDYING` - 所有任务都已终止
 * `TERMINATED`
 
-在线程池正常运行 (`RUNNING`) 状态后，调用 `shutdown()` 和 `shutdownNoew()` 后将分别进入 `SHUTDOWN` 或 `STOP` 状态，然后同时进入 `TIDYING` 状态。在 `terminated()` 函数结束后，线程池进入 `TERMINATED` 状态。
+在线程池正常运行 (`RUNNING`) 状态后，调用 `shutdown()` 和 `shutdownNow()` 后将分别进入 `SHUTDOWN` 或 `STOP` 状态，然后同时进入 `TIDYING` 状态。在 `terminated()` 函数结束后，线程池进入 `TERMINATED` 状态。
 
 ## Task Scheduling
 
