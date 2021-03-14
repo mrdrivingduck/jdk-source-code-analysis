@@ -10,30 +10,9 @@ Nanjing, Jiangsu, China
 
 ## Definition
 
-```java
-public class LinkedHashMap<K,V>
-    extends HashMap<K,V>
-    implements Map<K,V>
-{
+Map 的哈希表和链表的实现类。该类继承自 `HashMap`，除了具有 `HashMap` 的特性以外，还多维护了一个双向链表结构，所以能够保证元素的迭代顺序。特别地，可以用于实现 LRU：被 **访问** 过的结点将会重新回到链表尾部；如果插入操作超过了链表长度限制，链表的头部元素将被删除。
 
-}
-```
-
-Map 的哈希表和链表的实现类
-
-值得注意的是，继承自 `HashMap`
-
-除了具有 `HashMap` 的特性以外
-
-还多维护了一个双向链表结构
-
-所以能够保证元素的迭代顺序
-
-可以用于实现 LRU
-
-特别地，`HashMap` 在迭代时的时间复杂度与 capacity 有关
-
-而 `LinkedHashMap` 则与 size 有关
+`HashMap` 在迭代时的时间复杂度与 capacity 有关 (因为需要遍历桶数组)，而 `LinkedHashMap` 则与 size 有关 (遍历链表即可)。
 
 ```java
 /**
@@ -166,13 +145,17 @@ Map 的哈希表和链表的实现类
  * @see     Hashtable
  * @since   1.4
  */
+public class LinkedHashMap<K,V>
+    extends HashMap<K,V>
+    implements Map<K,V>
+{
+
+}
 ```
 
----
+## Node Definition
 
-结点定义：
-
-`LinkedHashMap.Entry<K,V>` 继承自 `HashMap.Node<K,V>`
+结点定义：`LinkedHashMap.Entry<K,V>` 继承自 `HashMap.Node<K,V>`。除了 hash 值和 key、value 以外，多了 `before` 和 `after` 两个双向链表指针。
 
 ```java
 /**
@@ -186,9 +169,14 @@ static class Entry<K,V> extends HashMap.Node<K,V> {
 }
 ```
 
-除了 hash 值和 key、value 以外，多了 `before` 和 `after`
+## Linked List Pointer
 
----
+定义双向链表的头指针和尾指针。
+
+定义了维护链表的顺序：
+
+* `accessOrder` 为 `true` 时，按照访问结点的顺序来组织链表 (即 LRU)
+* `accessOrder` 为 `false` 时，按照结点的插入顺序来组织链表
 
 ```java
 /**
@@ -210,14 +198,9 @@ transient LinkedHashMap.Entry<K,V> tail;
 final boolean accessOrder;
 ```
 
-多维护了头指针 `head` 和尾指针 `tail`
+## Linked List Operation
 
-以及迭代顺序
-
-* `true` - 按访问顺序
-* `false` - 按插入顺序
-
----
+将结点链接到链表的尾部。
 
 ```java
 // link at the end of list
@@ -233,9 +216,7 @@ private void linkNodeLast(LinkedHashMap.Entry<K,V> p) {
 }
 ```
 
-将 entry 链到链表尾部
-
----
+将结点 `src` 的链表引用关系转移到结点 `dst` 上，从而实现替换。
 
 ```java
 // apply src's links to dst
@@ -254,9 +235,10 @@ private void transferLinks(LinkedHashMap.Entry<K,V> src,
 }
 ```
 
-将链表中的 `src` 替换为 `dst` 结点，并维护所有指针的引用关系
+## Node Operations
 
----
+* 添加结点：实例化新结点后，将结点添加到链表尾部
+* 替换结点：实例化新结点后，将原结点的链表引用关系转移到新结点上
 
 ```java
 Node<K,V> newNode(int hash, K key, V value, Node<K,V> e) {
@@ -288,13 +270,7 @@ TreeNode<K,V> replacementTreeNode(Node<K,V> p, Node<K,V> next) {
 }
 ```
 
-新建普通结点或树结点
-
-将普通结点替换为树结点，或将树结点替换为普通结点
-
-维护双向链表的指针引用关系
-
----
+移除结点后，将结点从链表中删除。
 
 ```java
 void afterNodeRemoval(Node<K,V> e) { // unlink
@@ -312,7 +288,7 @@ void afterNodeRemoval(Node<K,V> e) { // unlink
 }
 ```
 
-在结点被移除后，维护该结点的前结点和后结点的引用关系
+在结点被插入后，由 `evict` 决定是否删除最老的结点。
 
 ```java
 void afterNodeInsertion(boolean evict) { // possibly remove eldest
@@ -324,7 +300,7 @@ void afterNodeInsertion(boolean evict) { // possibly remove eldest
 }
 ```
 
-根据 `evict` 来决定，插入操作后，是否要删除最老的结点 (LRU)
+在结点被访问后，如果 `accessOrder` 被设定为 `true`，那么将被访问的结点从链表中移出，然后重新添加到链表尾部，实现 LRU。
 
 ```java
 void afterNodeAccess(Node<K,V> e) { // move node to last
@@ -353,11 +329,12 @@ void afterNodeAccess(Node<K,V> e) { // move node to last
 }
 ```
 
-如果 `accessOrder == true`，也就是按照访问顺序组织链表
+## Constructor
 
-就将被访问的结点从链表中拿出来，并塞回最后 (也是 LRU)
+构造函数，内部直接调用 `HashMap` 的构造函数
 
----
+* 大部分情况下，`accessOrder` 默认为 `false`，即按照插入顺序组织链表
+* 但可以显式指定为 `true`，按照访问顺序组织链表
 
 ```java
 /**
@@ -429,12 +406,9 @@ public LinkedHashMap(int initialCapacity,
 }
 ```
 
-构造函数，内部直接调用 `HashMap` 的构造函数
+## Contains
 
-* 大部分情况下，`accessOrder` 默认为 `false`，即按照插入顺序组织链表
-* 但可以显式指定为 `true`，按照访问顺序组织链表
-
----
+由于 value 没有任何维护顺序，于是遍历整个集合。由于实现中有了双向链表，可以直接使用双向链表遍历，时间复杂度上，比 `HashMap` 好一些：`O(capacity)` 和 `O(size)` 的区别。
 
 ```java
 /**
@@ -455,15 +429,9 @@ public boolean containsValue(Object value) {
 }
 ```
 
-由于 value 没有任何维护顺序，就遍历整个集合吧
+## Get
 
-由于实现中有了双向链表，可以直接使用双向链表遍历
-
-时间复杂度上，比 `HashMap` 好一些
-
-* `O(capacity)` 和 `O(size)` 的区别
-
----
+调父类 `HashMap` 的 `get()` 来获得结点。如果双向链表按访问顺序来组织，那么调 `afterNodeAccess()` 把结点重新放到链表尾部。
 
 ```java
 /**
@@ -503,13 +471,9 @@ public V getOrDefault(Object key, V defaultValue) {
 }
 ```
 
-调父类 `HashMap` 的 `get()` 来获得结点
+## Clear
 
-如果双向链表按访问顺序来组织
-
-那么调 `afterNodeAccess()` 把结点重新放到链表尾部
-
----
+调 `HashMap` 的 `clear()`，同时置空双向链表的头尾指针。
 
 ```java
 /**
@@ -521,11 +485,9 @@ public void clear() {
 }
 ```
 
-调 `HashMap` 的 `clear()`
+## Remove Eldest Entry
 
-同时置空双向链表的头尾指针
-
----
+这个函数会在调用 `put()` 或 `putAll()` 后被调用，用于决定是否删除最老的元素。类中给定了默认的实现：直接返回 `false`，即不删除最老的元素。
 
 ```java
 /**
@@ -574,21 +536,9 @@ protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
 }
 ```
 
-这个函数会在调用 `put()` 或 `putAll()` 后被调用
+这个函数可以被用户自行重写，用于实现一个固定大小的 **LRU cache**。在结点被插入后，调用 `afterNodeInsertion()` 时，会对 `head` 结点调这个函数进行判断：如果返回 `true`，就把 `head` 结点给删掉 (最近最久未使用元素被淘汰)。
 
-用于决定是否删除最老的元素
-
-这个性质可以被用于实现一个固定大小的 LRU __cache__
-
-在调 `afterNodeInsertion()` 时，对 head 结点调这个函数进行判断
-
-* 如果返回 `true`，就把 head 结点给删掉
-
-在 `LinkedHashMap` 的默认实现中，返回 `false`
-
-* 即，不删除最老的结点
-
-可以重写这个函数，实现固定大小的 LRU cache：
+比如，实现固定大小的 LRU cache：
 
 ```java
 private static final int MAX_ENTRIES = 100;
@@ -598,7 +548,13 @@ protected boolean removeEldestEntry(Map.Entry eldest) {
 }
 ```
 
----
+## Iterators
+
+迭代器维护 `next` 和 `current` 指针，分别指向下一个迭代结点和当前迭代结点。提供三个函数：
+
+* `hasNext()` - 是否有下一个结点
+* `nextNode()` - 迭代下一个结点
+* `remove()` - 调 `HashMap` 的 `removeNode()` 函数，`HashMap` 的 `removeNode()` 函数中会调用 `afterNodeRemoval()` 作为回调，处理双向链表指针
 
 ```java
 // Iterators
@@ -657,25 +613,6 @@ final class LinkedEntryIterator extends LinkedHashIterator
     public final Map.Entry<K,V> next() { return nextNode(); }
 }
 ```
-
-迭代器维护 next 和 current 指针
-
-分别指向下一个迭代结点和当前迭代结点
-
-提供三个函数：
-
-* `hasNext()` - 是否有下一个结点
-* `nextNode()` - 迭代下一个结点
-* `remove()` - 调 `HashMap` 的 `removeNode()` 函数
-    * `HashMap` 的 `removeNode()` 函数中会调用 `afterNodeRemoval()` 处理双向链表指针
-
----
-
-## Summary
-
-所以主要还是看 HashMap 了
-
-LinkedHashMap 也就是多维护了一个双向链表
 
 ---
 
