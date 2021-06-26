@@ -423,38 +423,38 @@ public synchronized int read(byte b[], int off, int len)
 跳过指定数量的字节。同样，如果接触到了 buffer 的尾部，那么调用一次 `fill()` 读取新内容。
 
 ```java
-    /**
-     * See the general contract of the <code>skip</code>
-     * method of <code>InputStream</code>.
-     *
-     * @exception  IOException  if the stream does not support seek,
-     *                          or if this input stream has been closed by
-     *                          invoking its {@link #close()} method, or an
-     *                          I/O error occurs.
-     */
-    public synchronized long skip(long n) throws IOException {
-        getBufIfOpen(); // Check for closed stream
-        if (n <= 0) {
-            return 0;
-        }
-        long avail = count - pos;
-
-        if (avail <= 0) {
-            // If no mark position set then don't keep in buffer
-            if (markpos <0)
-                return getInIfOpen().skip(n);
-
-            // Fill in buffer to save bytes for reset
-            fill();
-            avail = count - pos;
-            if (avail <= 0)
-                return 0;
-        }
-
-        long skipped = (avail < n) ? avail : n;
-        pos += skipped;
-        return skipped;
+/**
+ * See the general contract of the <code>skip</code>
+ * method of <code>InputStream</code>.
+ *
+ * @exception  IOException  if the stream does not support seek,
+ *                          or if this input stream has been closed by
+ *                          invoking its {@link #close()} method, or an
+ *                          I/O error occurs.
+ */
+public synchronized long skip(long n) throws IOException {
+    getBufIfOpen(); // Check for closed stream
+    if (n <= 0) {
+        return 0;
     }
+    long avail = count - pos;
+
+    if (avail <= 0) {
+        // If no mark position set then don't keep in buffer
+        if (markpos <0)
+            return getInIfOpen().skip(n);
+
+        // Fill in buffer to save bytes for reset
+        fill();
+        avail = count - pos;
+        if (avail <= 0)
+            return 0;
+    }
+
+    long skipped = (avail < n) ? avail : n;
+    pos += skipped;
+    return skipped;
+}
 ```
 
 ---
