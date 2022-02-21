@@ -16,14 +16,14 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
 }
 ```
 
-Map 接口的骨架实现
+Map 接口的骨架实现。
 
-* 为实现一个不可修改的 Map
-    * 继承自该类的类需要实现 `entrySet()`
-    * 返回的集合应当继承自 `AbstractSet`，但不能提供 `add()` 和 `remove()` 函数
-* 为实现一个可修改的 Map
-    * 必须实现 `put()` 函数
-    * 迭代器必须实现 `remove()` 函数
+- 为实现一个不可修改的 Map
+  - 继承自该类的类需要实现 `entrySet()`
+  - 返回的集合应当继承自 `AbstractSet`，但不能提供 `add()` 和 `remove()` 函数
+- 为实现一个可修改的 Map
+  - 必须实现 `put()` 函数
+  - 迭代器必须实现 `remove()` 函数
 
 ```java
 /**
@@ -66,7 +66,7 @@ Map 接口的骨架实现
  */
 ```
 
----
+集合大小：
 
 ```java
 /**
@@ -90,7 +90,7 @@ public boolean isEmpty() {
 }
 ```
 
----
+利用 `entrySet()` 的迭代器迭代整个 Map，检验是否存在指定的 value。检验所需要的时间与 Map 大小呈线性关系。
 
 ```java
 /**
@@ -125,13 +125,7 @@ public boolean containsValue(Object value) {
 }
 ```
 
-利用 `entrySet()` 的迭代器迭代整个 Map
-
-检验是否存在指定的 value
-
-检验所需要的时间与 Map 大小呈线性关系
-
----
+利用 `entrySet()` 的迭代器迭代整个 Map，检验是否存在指定的 key。检验所需要的时间与 Map 大小呈线性关系。但大部分的具体实现可以重写这个函数，根据具体的实现方式提升性能。
 
 ```java
 /**
@@ -167,17 +161,7 @@ public boolean containsKey(Object key) {
 }
 ```
 
-利用 `entrySet()` 的迭代器迭代整个 Map
-
-检验是否存在指定的 key
-
-检验所需要的时间与 Map 大小呈线性关系
-
-但大部分的具体实现可以重写这个函数
-
-根据具体的实现方式提升性能
-
----
+根据 `entrySet()` 迭代所有的 entry，直到找到 key 对应的 value。如果没有找到，则返回 `null`。具体实现一般会重写这个函数。
 
 ```java
 /**
@@ -213,15 +197,7 @@ public V get(Object key) {
 }
 ```
 
-根据 `entrySet()` 迭代所有的 entry
-
-直到找到 key 对应的 value
-
-如果没有找到，则返回 `null`
-
-具体实现一般会重写这个函数
-
----
+需要被重写？
 
 ```java
 /**
@@ -241,9 +217,7 @@ public V put(K key, V value) {
 }
 ```
 
-需要被重写？
-
----
+依旧是通过迭代，找到 key 和对应的 entry，然后用迭代器的 `remove()` 函数将 entry 删除，并返回旧的 value。
 
 ```java
 /**
@@ -294,11 +268,7 @@ public V remove(Object key) {
 }
 ```
 
-依旧是通过迭代，找到 key 和对应的 entry
-
-然后用迭代器的 `remove()` 函数将 entry 删除，并返回旧的 value
-
----
+容量操作，全部借助 `entrySet()` 实现。
 
 ```java
 /**
@@ -340,9 +310,7 @@ public void clear() {
 }
 ```
 
-容量操作，全部借助 `entrySet()` 实现
-
----
+这两个集合会在第一次请求时被构造，之后会在 Map 内被维护。因此之后的请求可以直接返回这个集合。
 
 ```java
 /**
@@ -373,11 +341,7 @@ transient Set<K>        keySet;
 transient Collection<V> values;
 ```
 
-这两个集合会在第一次请求时被构造
-
-之后会在 Map 内被维护
-
-因此之后的请求可以直接返回这个集合
+里面的迭代器类是对 Map 的迭代器做了一次封装，并实现了返回的集合的操作函数。由于实例化的是抽象类，因此抽象类中定义的函数需要被实现或重写。
 
 ```java
 /**
@@ -501,22 +465,13 @@ public Collection<V> values() {
 }
 ```
 
-里面的迭代器类是对 Map 的迭代器做了一次封装
-
-并实现了返回的集合的操作函数
-
-* 因为实例化的是抽象类
-* 抽象类中定义的函数需要被实现或重写
-
----
+整个一直被使用的函数需要被具体实现的类实现。
 
 ```java
 public abstract Set<Entry<K,V>> entrySet();
 ```
 
-整个一直被使用的函数需要被具体实现的类实现
-
----
+首先要保证被比较的对象也是一个 Map，然后分别比较自身和被比较对象的 `entrySet()` 是否完全相同——调用 value 对象的 `equals()`。
 
 ```java
 /**
@@ -575,13 +530,7 @@ public boolean equals(Object o) {
 }
 ```
 
-首先要保证被比较的对象也是一个 Map
-
-然后分别比较自身和被比较对象的 `entrySet()` 是否完全相同
-
-* 调用 value 对象的 `equals()`
-
----
+迭代 `entrySet()` 并累加每一个 entry 的 hashcode，保证了 `m1.equals(m2)` 隐含 `m1.hashCode()==m2.hashCode()`。
 
 ```java
 /**
@@ -611,11 +560,7 @@ public int hashCode() {
 }
 ```
 
-迭代 `entrySet()` 并累加每一个 entry 的 hashcode
-
-保证了 `m1.equals(m2)` 隐含 `m1.hashCode()==m2.hashCode()`
-
----
+以 `entrySet()` 的迭代器顺序，返回 Map 的字符串表示。
 
 ```java
 /**
@@ -651,9 +596,7 @@ public String toString() {
 }
 ```
 
-以 `entrySet()` 的迭代器顺序，返回 Map 的字符串表示
-
----
+浅拷贝。但是没用搞懂这两个置 `null` 的含义，可能是因为没有搞懂 `keySet` 和 `values` 这两个内部变量的具体维护方式。等看具体实现类的时候再看看。
 
 ```java
 /**
@@ -669,12 +612,3 @@ protected Object clone() throws CloneNotSupportedException {
     return result;
 }
 ```
-
-浅拷贝；但是没用搞懂这两个置 `null` 的含义
-
-可能是因为没有搞懂 `keySet` 和 `values` 这两个内部变量的具体维护方式
-
-等看具体实现类的时候再看看
-
----
-

@@ -17,11 +17,11 @@ public abstract class AbstractQueue<E>
 }
 ```
 
-提供了 `Queue` 接口的基本实现
+提供了 `Queue` 接口的基本实现：
 
-* `add()` 基于 `offer()`
-* `remove()` 基于 `poll()`
-* `element()` 基于 `peek()`
+- `add()` 基于 `offer()`
+- `remove()` 基于 `poll()`
+- `element()` 基于 `peek()`
 
 但对于失败的操作会抛出异常，而不是返回 `null` 或 `false`
 
@@ -54,8 +54,6 @@ public abstract class AbstractQueue<E>
  */
 ```
 
----
-
 ```java
 /**
  * Constructor for use by subclasses.
@@ -64,7 +62,7 @@ protected AbstractQueue() {
 }
 ```
 
----
+在 `offer()` 返回失败（即意味着没有空间）时抛出异常。
 
 ```java
 /**
@@ -95,11 +93,7 @@ public boolean add(E e) {
 }
 ```
 
-在 `offer()` 返回失败时 (即意味着没有空间时)
-
-抛出异常
-
----
+在队列已经为空时，抛出异常。
 
 ```java
 /**
@@ -122,9 +116,7 @@ public E remove() {
 }
 ```
 
-在队列已经为空时，抛出异常
-
----
+看一下队头元素，如果为空，则抛出异常。
 
 ```java
 /**
@@ -147,11 +139,7 @@ public E element() {
 }
 ```
 
-看一下队头元素
-
-如果为空，则抛出异常
-
----
+把所有的元素全部都移除。
 
 ```java
 /**
@@ -166,10 +154,6 @@ public void clear() {
         ;
 }
 ```
-
-把所有的元素全部都移除
-
----
 
 ```java
 /**
@@ -213,6 +197,3 @@ public boolean addAll(Collection<? extends E> c) {
     return modified;
 }
 ```
-
----
-

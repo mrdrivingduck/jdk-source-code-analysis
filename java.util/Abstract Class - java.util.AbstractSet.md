@@ -16,11 +16,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 }
 ```
 
-`Set` 接口的骨架实现
-
-这个类没有覆盖 `AbstractCollection` 中的任何函数
-
-* 只实现了 `equals()` 和 `hashcode()`
+`Set` 接口的骨架实现。这个类没有覆盖 `AbstractCollection` 中的任何函数，只实现了 `equals()` 和 `hashcode()`。
 
 ```java
 /**
@@ -54,7 +50,11 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
  */
 ```
 
----
+比较两个 Set 是否相同。返回 `true` 的条件：
+
+- 给定的对象也是一个 Set
+- 两个 Set 有着相同的 size
+- 给定 Set 中的每一个成员都在这个 Set 中
 
 ```java
 /**
@@ -93,15 +93,7 @@ public boolean equals(Object o) {
 }
 ```
 
-比较两个 Set 是否相同
-
-返回 `true` 的条件：
-
-* 给定的对象也是一个 Set
-* 两个 Set 有着相同的 size
-* 给定 Set 中的每一个成员都在这个 Set 中
-
----
+计算集合的 hashcode。迭代每一个元素的 hashcode，并累加。`null` 的 hashcode 为 `0`。
 
 ```java
 /**
@@ -133,13 +125,7 @@ public int hashCode() {
 }
 ```
 
-计算集合的 hashcode
-
-迭代每一个元素的 hashcode，并累加
-
-* `null` 的 hashcode 为 `0`
-
----
+两个集合的差集。在实现的细节上，选择两个集合中元素较少的集合进行迭代。
 
 ```java
 /**
@@ -197,12 +183,3 @@ public boolean removeAll(Collection<?> c) {
     return modified;
 }
 ```
-
-两个集合的差集
-
-在实现的细节上
-
-选择两个集合中元素较少的集合进行迭代
-
----
-

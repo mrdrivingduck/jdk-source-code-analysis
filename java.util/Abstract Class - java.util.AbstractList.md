@@ -16,9 +16,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 }
 ```
 
-`List` 的抽象实现类
-
-实现一个随机存取的数据容器 (比如数组)
+`List` 的抽象实现类，实现一个随机存取的数据容器（比如数组）。
 
 ```java
 /**
@@ -65,7 +63,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
  */
 ```
 
----
+构造函数：
 
 ```java
 /**
@@ -76,7 +74,7 @@ protected AbstractList() {
 }
 ```
 
----
+这些都是需要覆盖的增删函数，否则不支持：
 
 ```java
 /**
@@ -144,9 +142,7 @@ public E remove(int index) {
 }
 ```
 
-这些都是需要覆盖的，否则不支持
-
----
+元素查找：
 
 ```java
 /**
@@ -201,8 +197,10 @@ public int lastIndexOf(Object o) {
 
 这个 `ListIterator` 是实现了迭代器接口的两个内部类：
 
-* `Itr` 类实现了 `Iterator` 接口
-* `ListItr` 类继承了 `Itr` 类并实现了 `ListIterator` 接口
+- `Itr` 类实现了 `Iterator` 接口
+- `ListItr` 类继承了 `Itr` 类并实现了 `ListIterator` 接口
+
+由于 List 结构是随机存取的，所以这个迭代器实际上维护的是元素的 index。在构造时，就将 `index` 赋值给了内部维护的 `cursor`，那么，迭代器的 `hasNext()` 和 `hasPrevious()` 函数就可以通过判断 `cursor` 的位置来实现。
 
 ```java
 private class Itr implements Iterator<E> {
@@ -327,17 +325,7 @@ private class ListItr extends Itr implements ListIterator<E> {
 }
 ```
 
-由于 List 结构是随机存取的
-
-所以这个迭代器实际上维护的是元素的 index
-
-在构造时，就将 `index` 赋值给了内部维护的 `cursor`
-
-那么，迭代器的 `hasNext()` 和 `hasPrevious()` 函数就可以通过判断 `cursor` 的位置来实现
-
----
-
-通过不同的方法可以获取迭代器
+获取一个通用迭代器：
 
 ```java
 /**
@@ -363,11 +351,7 @@ public Iterator<E> iterator() {
 }
 ```
 
-通过上述方法获取了一个通用迭代器
-
-也可以获取 List 特有的迭代器：
-
-* 由于是随机访问，那么初始化时可以指向任意元素
+获取 List 特有的迭代器。由于是随机访问，那么初始化时可以指向任意元素：
 
 ```java
 /**
@@ -410,7 +394,9 @@ public ListIterator<E> listIterator(final int index) {
 }
 ```
 
----
+这个是我认为最有意思的一个地方。这个值用于记录 List **结构性修改** 的次数——结构性修改指导致 List 的 size 发生变化的操作。如果在迭代器迭代 List 的过程中，List 发生了结构性修改，那么迭代过程将会被打乱。
+
+如果这个值在意料之外地被修改，那么在迭代器调 `next()`, `remove()`, `previous()`, `set()`, `add()` 时，抛出 `ConcurrentModificationExceptions` 异常。这种实现是一种 fail-fast 行为，能够快速抛出错误，防止并发修改后不确定性情况的发生。
 
 ```java
 /**
@@ -442,28 +428,7 @@ public ListIterator<E> listIterator(final int index) {
 protected transient int modCount = 0;
 ```
 
-这个是我认为最有意思的一个地方
-
-这个值用于记录 List __结构性修改__ 的次数
-
-* 结构性修改指导致 List 的 size 发生变化的操作
-
-如果在迭代器迭代 List 的过程中，List 发生了结构性修改
-
-那么迭代过程将会被打乱
-
-如果这个值在意料之外地被修改
-
-那么在迭代器调 `next()`, `remove()`, `previous()`, `set()`, `add()` 时
-
-抛出 `ConcurrentModificationExceptions` 异常
-
-* 这种实现是一种 fail-fast 行为
-* 快速抛出错误，防止并发修改后不确定性情况的发生
-
-那么，从具体上，这个值是怎么用的呢？
-
-从 List 中获取迭代器时，这个值被初始化给了迭代器：
+那么，从具体上，这个值是怎么用的呢？从 List 中获取迭代器时，这个值被初始化给了迭代器：
 
 ```java
 /**
@@ -474,9 +439,7 @@ protected transient int modCount = 0;
 int expectedModCount = modCount;
 ```
 
-在使用这个迭代器进行 `add()` 或 `remove()` 时
-
-迭代器会自行维护这个 `expectedModeCount` 与 List 的 `modCount` 一致：
+在使用这个迭代器进行 `add()` 或 `remove()` 时，迭代器会自行维护这个 `expectedModeCount` 与 List 的 `modCount` 一致：
 
 ```java
 public void add(E e) {
@@ -521,23 +484,11 @@ final void checkForComodification() {
 }
 ```
 
-从而保证，在遍历期间
+从而保证，在遍历期间只有本迭代器才能对 List 有结构性修改的行为。其中，`expectedModCount` 由迭代器维护，`modCount` 由 List 维护。迭代器时刻负责维护 `expectedModCount` 与 `modCount` 一致。而 List 在其对应的 `add()`, `remove()` 函数中对 `modCount` 进行维护。
 
-只有本迭代器才能对 List 有结构性修改的行为
+由于本类是个抽象类，所以没有相关代码。由具体的实现类完成。
 
-其中，`expectedModCount` 由迭代器维护
-
-`modCount` 由 List 维护
-
-迭代器时刻负责维护 `expectedModCount` 与 `modCount` 一致
-
-而 List 在其对应的 `add()`, `remove()` 函数中对 `modCount` 进行维护
-
-由于本类是个抽象类，所以没有相关代码
-
-由具体的实现类完成
-
----
+`lastRet` 用于记录迭代器移动后的当前元素的 index。也就是说，在调迭代器的 `next()` 或 `previous()` 后，`lastRet` 会记录当前元素的 index。在调迭代器的 `remove()` 或 `set()` 后，迭代器直接对 `lastRet` 对应的元素进行操作。如果是 `remove()` 操作，则操作完毕后将该值复位为 -1。因此重复调用 `remove()` 肯定是会出问题滴。
 
 ```java
 /**
@@ -547,20 +498,3 @@ final void checkForComodification() {
  */
 int lastRet = -1;
 ```
-
-这个值用于记录迭代器移动后的当前元素的 index
-
-也就是说，在调迭代器的 `next()` 或 `previous()` 后
-
-`lastRet` 会记录当前元素的 index
-
-在调迭代器的 `remove()` 或 `set()` 后
-
-迭代器直接对 `lastRet` 对应的元素进行操作
-
-如果是 `remove()` 操作，则操作完毕后将该值复位为 -1
-
-因此重复调用 `remove()` 肯定是会出问题滴
-
----
-
