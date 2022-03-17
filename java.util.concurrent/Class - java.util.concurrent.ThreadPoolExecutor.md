@@ -10,7 +10,7 @@ Nanjing, Jiangsu, China
 
 ## Definition
 
-线程池的实现类。由于这个类的源码和注释较多，因此决定直接根据功能分模块进行简要分析。线程池的概要可以参阅另一篇 [笔记](https://mrdrivingduck.github.io/blog/#/markdown?repo=notes&path=Java%2FJava%20Thread%20Pool.md)。
+线程池的实现类。由于这个类的源码和注释较多，因此决定直接根据功能分模块进行简要分析。线程池的概要可以参阅另一篇 [笔记](../../notes/Java/Java%20Thread%20Pool.md)。
 
 ```java
 public class ThreadPoolExecutor extends AbstractExecutorService {
