@@ -18,30 +18,11 @@ public class LinkedHashSet<E>
 }
 ```
 
-与 HashSet 不同，在所有元素之间维护了一个双向链表
+与 HashSet 不同，在所有元素之间维护了一个双向链表，定义了迭代顺序：以元素的插入顺序为顺序。重新插入元素不会影响元素在链表中的顺序
 
-* 定义了迭代顺序
-* 以元素的插入顺序为顺序
-* 重新插入元素不会影响元素在链表中的顺序
+该集合提供所有 Set 的基本操作，允许 `null` 元素。提供常数时间的增、删、查操作，但会比 HashSet 慢一些，因为要额外维护双向链表。但是遍历时间只和 `size` 有关，与 `capacity` 无关。与 HashSet 一样，`capacity` 和 `load factor` 是影响性能的两个参数，但是选择较大的 `capacity` 对性能带来的影响没有像对 HashSet 那样大。
 
-该集合提供所有 Set 的基本操作
-
-* 允许 `null` 元素
-
-提供常数时间的增、删、查操作，但会比 HashSet 慢一些
-
-* 因为要额外维护双向链表
-
-但是遍历时间只和 `size` 有关，与 `capacity` 无关
-
-与 HashSet 一样，`capacity` 和 `load factor` 是影响性能的两个参数
-
-* 但是选择较大的 `capacity` 对性能带来的影响没有像对 HashSet 那样大
-
-该集合的实现不是线程安全的
-
-* 外部同步
-* `Set s = Collections.synchronizedSet(new LinkedHashSet(...));`
+该集合的实现不是线程安全的，要么外部同步，要么 `Set s = Collections.synchronizedSet(new LinkedHashSet(...));`。
 
 ```java
 /**
@@ -135,7 +116,9 @@ public class LinkedHashSet<E>
  */
 ```
 
----
+## Constructor
+
+由于 `LinkedHashSet` 继承自 `HashSet`，而 HashSet 内部已经维护了 HashMap。所以成员变量中不再需要维护一个 Map。默认的初始 capacity 为 `16`，load factory 为 `0.75f`。
 
 ```java
 /**
@@ -187,27 +170,6 @@ public LinkedHashSet(Collection<? extends E> c) {
 }
 ```
 
-由于 `LinkedHashSet` 继承自 `HashSet`
-
-而 HashSet 内部已经维护了 HashMap
-
-所以成员变量中不再需要维护一个 Map
-
-默认的初始 capacity 为 `16`，load factory 为 `0.75f`
-
 ---
 
-但是源码到这里就结束了？？？
-
-逗我呢？双向链表呢？
-
-虽然是一路继承下来了
-
-可能 `LinkedHashSet` 借用了 `LinkedHashMap` 中的实现方式
-
-但并没有发现 `LinkedHashSet` 和 `LinkedHashMap` 有什么依赖关系
-
-？？？？？？ 😓🥱
-
----
-
+但是源码到这里就结束了？？？逗我呢？双向链表呢？虽然是一路继承下来了，可能 `LinkedHashSet` 借用了 `LinkedHashMap` 中的实现方式。但并没有发现 `LinkedHashSet` 和 `LinkedHashMap` 有什么依赖关系。？？？？？？ 😓🥱

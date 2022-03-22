@@ -63,7 +63,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
  */
 ```
 
-构造函数：
+## Constructor
 
 ```java
 /**
@@ -73,6 +73,8 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 protected AbstractList() {
 }
 ```
+
+## Add / Remove
 
 这些都是需要覆盖的增删函数，否则不支持：
 
@@ -142,6 +144,8 @@ public E remove(int index) {
 }
 ```
 
+## Index Of
+
 元素查找：
 
 ```java
@@ -194,6 +198,8 @@ public int lastIndexOf(Object o) {
     return -1;
 }
 ```
+
+## List Iterator
 
 这个 `ListIterator` 是实现了迭代器接口的两个内部类：
 

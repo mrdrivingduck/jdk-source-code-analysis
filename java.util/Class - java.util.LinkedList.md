@@ -19,24 +19,9 @@ public class LinkedList<E>
 }
 ```
 
-List 的双向链表实现
+List 的双向链表实现，实现了 List 中所有的可选功能。允许所有元素 (包括 `null`)。该实现不同步，必须在外部自行同步：要么被封装 List 的对象同步，要么使用此函数包裹 `List list = Collections.synchronizedList(new LinkedList(...));`。
 
-实现了 List 中所有的可选功能
-
-允许所有元素 (包括 `null`)
-
-该实现不同步，必须在外部自行同步
-
-* 要么被封装 List 的对象同步
-* 要么使用此函数包裹 `List list = Collections.synchronizedList(new LinkedList(...));`
-
-此类返回的迭代器是 fail-fast 的
-
-* 迭代器被创建后，如果 List 发生结构性修改，会快速抛出异常
-
-此外还实现了 Queue 接口
-
-所以要实现所有 Queue 中定义的函数
+此类返回的迭代器是 fail-fast 的：迭代器被创建后，如果 List 发生结构性修改，会快速抛出异常。此外还实现了 Queue 接口，所以要实现所有 Queue 中定义的函数。
 
 ```java
 /**
@@ -93,7 +78,11 @@ List 的双向链表实现
  */
 ```
 
----
+## 内部变量
+
+- 头结点
+- 尾结点
+- 集合大小
 
 ```java
 transient int size = 0;
@@ -113,13 +102,9 @@ transient Node<E> first;
 transient Node<E> last;
 ```
 
-内部变量
+## 结点的类型定义
 
-* 头结点
-* 尾结点
-* 集合大小
-
----
+包含了数据本身，以及前后指针。
 
 ```java
 private static class Node<E> {
@@ -135,11 +120,7 @@ private static class Node<E> {
 }
 ```
 
-结点的类型定义
-
-包含了数据本身，以及前后指针
-
----
+## Constructor
 
 ```java
 /**
@@ -162,7 +143,9 @@ public LinkedList(Collection<? extends E> c) {
 }
 ```
 
----
+## Insert
+
+将结点插入头部：
 
 ```java
 /**
@@ -181,7 +164,7 @@ private void linkFirst(E e) {
 }
 ```
 
-将结点插入头部
+将结点插入尾部：
 
 ```java
 /**
@@ -200,7 +183,7 @@ void linkLast(E e) {
 }
 ```
 
-将结点插入尾部
+将结点插到某个元素之前。如果之前已经没有元素了，就将头指针指向新插入的元素：
 
 ```java
 /**
@@ -220,12 +203,7 @@ void linkBefore(E e, Node<E> succ) {
 }
 ```
 
-将结点插到某个元素之前
-
-* 如果之前已经没有元素了
-* 就将头指针指向新插入的元素
-
----
+将结点加入链表的头部或尾部：
 
 ```java
 /**
@@ -249,7 +227,7 @@ public void addLast(E e) {
 }
 ```
 
-将结点加入链表的头部或尾部
+`add()` 的实现是将结点插入尾部：
 
 ```java
 /**
@@ -266,7 +244,7 @@ public boolean add(E e) {
 }
 ```
 
-`add()` 的实现是将结点插入尾部
+除了在最后一个位置插入使用 `linkLast()`，在别的位置插入都使用 `linkBefore()`：
 
 ```java
 /**
@@ -288,11 +266,9 @@ public void add(int index, E element) {
 }
 ```
 
-除了在最后一个位置插入使用 `linkLast()`
+## Unlink
 
-在别的位置插入都使用 `linkBefore()`
-
----
+将结点从链表中摘下来，并修改前后结点的前后指针。
 
 ```java
 /**
@@ -363,11 +339,9 @@ E unlink(Node<E> x) {
 }
 ```
 
-将结点从链表中摘下来
+## Remove
 
-并修改前后结点的前后指针
-
----
+摘掉链表中的第一个或最后一个元素，并处理链表为空的异常情况：
 
 ```java
 /**
@@ -397,9 +371,7 @@ public E removeLast() {
 }
 ```
 
-摘掉链表中的第一个和最后一个元素
-
-并处理链表为空的异常情况
+从头遍历链表，删除指定元素的第一次出现：
 
 ```java
 /**
@@ -435,9 +407,9 @@ public boolean remove(Object o) {
 }
 ```
 
-从头遍历链表，删除指定元素的第一次出现
+## Get
 
----
+取得链表中的第一个或最后一个元素：
 
 ```java
 /**
@@ -467,9 +439,9 @@ public E getLast() {
 }
 ```
 
-取得链表中的第一个或最后一个元素
+## Add All
 
----
+首先将输入集合转为数组，然后定位本链表的插入位置。记录插入位置之后的元素位置，分为结尾和中间两种情况。然后通过循环将元素一个一个链入链表，然后将后面的原结点链入链表：
 
 ```java
 /**
@@ -527,19 +499,9 @@ public boolean addAll(int index, Collection<? extends E> c) {
 }
 ```
 
-首先将输入集合转为数组
+## Clear
 
-然后定位本链表的插入位置
-
-记录插入位置之后的元素位置
-
-* 分为结尾和中间两种情况
-
-然后通过循环将元素一个一个链入链表
-
-然后将后面的原结点链入链表
-
----
+在循环中，先记录下一个结点的位置。然后把当前节点全部置空、头尾指针置空、`size` 置 0：
 
 ```java
 /**
@@ -564,13 +526,9 @@ public void clear() {
 }
 ```
 
-在循环中，先记录下一个结点的位置
+## Get / Set
 
-然后把当前节点全部置空
-
-头尾指针置空、`size` 置 0
-
----
+按 `index` 进行 get 和 set。由于链表不是随机访问，要调用 `node()` 子函数先遍历链表找到对应结点：
 
 ```java
 /**
@@ -603,13 +561,7 @@ public E set(int index, E element) {
 }
 ```
 
-按 `index` 进行 get 和 set
-
-由于链表不是随机访问
-
-要调用 `node()` 子函数先遍历链表找到对应结点
-
----
+这里的优化是，根据 size 的大小和 index 的位置，决定从链表头开始遍历还是从链表尾开始遍历：
 
 ```java
 /**
@@ -632,11 +584,12 @@ Node<E> node(int index) {
 }
 ```
 
-这里的优化是，根据 size 的大小和 index 的位置
+## Range Check
 
-决定从链表头开始遍历还是从链表尾开始遍历
+两个范围检查函数
 
----
+- `elementIndex` 用于访问元素
+- `positionIndex` 用于插入元素，所以允许最后一个元素的下一个位置
 
 ```java
 /**
@@ -665,12 +618,9 @@ private void checkPositionIndex(int index) {
 }
 ```
 
-两个范围检查函数
+## Search
 
-* `elementIndex` 用于访问元素
-* `positionIndex` 用于插入元素，所以允许最后一个元素的下一个位置
-
----
+从链表头或链表尾开始，寻找指定元素的第一次索引或最后一次索引。
 
 ```java
 /**
@@ -732,15 +682,11 @@ public int lastIndexOf(Object o) {
 }
 ```
 
-从链表头或链表尾开始
+## Queue Operations
 
-寻找指定元素的第一次索引或最后一次索引
+一些队列操作，操作的具体实现全部使用了已实现的链表基本操作。
 
----
-
-一些队列操作
-
-操作的具体实现全部使用了已实现的链表基本操作
+获取第一个元素，但不删除：
 
 ```java
 /**
@@ -755,7 +701,7 @@ public E peek() {
 }
 ```
 
-获取第一个元素，但不删除
+获得第一个元素：
 
 ```java
 /**
@@ -770,7 +716,7 @@ public E element() {
 }
 ```
 
-获得第一个元素
+删除第一个元素。别的不想写了，反正就是各种调 add 或 remove，在链表的头或尾进行操作。
 
 ```java
 /**
@@ -796,17 +742,9 @@ public E remove() {
 }
 ```
 
-删除第一个元素
+## List Iterator
 
-别的不想写了
-
-反正就是各种调 add 或 remove
-
-在链表的头或尾进行操作
-
----
-
-LinkedList 也对 ListIterator 进行了重新实现
+LinkedList 也对 ListIterator 进行了重新实现，可以获取一个指向任意位置的迭代器：
 
 ```java
 /**
@@ -836,11 +774,7 @@ public ListIterator<E> listIterator(int index) {
 }
 ```
 
-可以获取一个指向任意位置的迭代器
-
-看一下迭代器的内部实现
-
-首先是迭代器内部维护的状态变量：
+看一下迭代器的内部实现。首先是迭代器内部维护的状态变量：
 
 ```java
 private class ListItr implements ListIterator<E> {
@@ -853,21 +787,9 @@ private class ListItr implements ListIterator<E> {
 }
 ```
 
-可以看到，迭代器记录了指向当前迭代位置的结点和上一个返回的结点
+可以看到，迭代器记录了指向当前迭代位置的结点和上一个返回的结点，以及当前迭代位置的 `index`。还有用于防止并发修改的 `expectedModCount`。因此，迭代器的 `previous()`, `next()`, `add()`, `remove()` 等操作都要维护这些状态变量。
 
-以及当前迭代位置的 `index`
-
-还有用于防止并发修改的 `expectedModCount`
-
-因此，迭代器的 `previous()`, `next()`, `add()`, `remove()` 等操作都要维护这些状态变量
-
----
-
-普通迭代器 Iterator 没有具体实现
-
-应该是默认继承了父类的默认行为
-
-有意思的地方是，多实现了一种反向迭代器 DescendingIterator
+普通迭代器 Iterator 没有具体实现，应该是默认继承了父类的默认行为。有意思的地方是，多实现了一种反向迭代器 DescendingIterator：
 
 ```java
 /**
@@ -878,11 +800,7 @@ public Iterator<E> descendingIterator() {
 }
 ```
 
-具体的内部实现，借用了上面的 ListIterator
-
-只不过把操作的方向取了反
-
-* DescendingIterator 的 `next()` 操作实际上是内部 ListIterator 的 `previous()`，反之亦然
+具体的内部实现，借用了上面的 ListIterator，只不过把操作的方向取了反。DescendingIterator 的 `next()` 操作实际上是内部 ListIterator 的 `previous()`，反之亦然。
 
 ```java
 /**
@@ -902,13 +820,13 @@ private class DescendingIterator implements Iterator<E> {
 }
 ```
 
----
+## Copy
 
 拷贝操作
 
-* 首先调父类的默认 `clone()`
-* 将链表设置为 __处女__ 状态 😳
-* 然后对每一个元素调用 `add()` 加入链表
+- 首先调父类的默认 `clone()`
+- 将链表设置为 **处女** 状态 😳
+- 然后对每一个元素调用 `add()` 加入链表
 
 ```java
 @SuppressWarnings("unchecked")
@@ -942,7 +860,9 @@ public Object clone() {
 }
 ```
 
----
+## To Array
+
+返回集合的数组形式。先根据链表大小开辟数组，然后将每个元素放进去。
 
 ```java
 /**
@@ -967,11 +887,3 @@ public Object[] toArray() {
     return result;
 }
 ```
-
-返回集合的数组形式
-
-* 先根据链表大小开辟数组
-* 然后将每个元素放进去
-
----
-

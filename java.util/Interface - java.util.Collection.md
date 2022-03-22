@@ -40,12 +40,12 @@ public interface Collection<E> extends Iterable<E> {
 
 所有通用集合的实现类应当至少提供两个标准构造函数：
 
-* 一个空参数构造函数 - 用于创建空集合
-* 一个同类型的单参数构造函数 - 创建一个新的具有相同元素的集合 (拷贝构造)
+- 一个空参数构造函数 - 用于创建空集合
+- 一个同类型的单参数构造函数 - 创建一个新的具有相同元素的集合 (拷贝构造)
 
 不同类型的集合可能有不同的限制：有些集合禁止空元素；有些集合对数据类型有限制。每个集合自己决定是否实现同步。
 
----
+## Size
 
 返回集合中的元素个数。如果结合中的元素多于 `Integer.MAX_VALUE`，则返回 `Integer.MAX_VALUE`。
 
@@ -55,15 +55,15 @@ int size();
 
 > 顺便记录一下 code style。最近在看 alibaba 的 Java 开发手册，interface 中的函数不加 `public`。
 
----
+## Empty
 
-集合是否不包含元素
+集合是否不包含元素。
 
 ```java
 boolean isEmpty();
 ```
 
----
+## Contains
 
 返回集合中是否存在特定元素，当且仅当集合中至少有一个元素时返回 `true`。
 
@@ -71,7 +71,7 @@ boolean isEmpty();
 boolean contains(Object o);
 ```
 
----
+## Iterator
 
 返回遍历集合元素的迭代器。
 
@@ -79,7 +79,7 @@ boolean contains(Object o);
 Iterator<E> iterator();
 ```
 
----
+## To Array
 
 返回一个包含所有元素的数组。如果集合能够保证迭代器返回元素的顺序，这个函数也需要保证相同的顺序。如果集合对象内部维护了一个数组的话，该函数返回的数组一定是一个新的拷贝。
 
@@ -87,7 +87,7 @@ Iterator<E> iterator();
 Object[] toArray();
 ```
 
----
+## Add
 
 如果集合被修改，返回 `true`；如果集合不允许重复并已有元素存在，返回 `false`。
 
@@ -95,7 +95,7 @@ Object[] toArray();
 boolean add(E e);
 ```
 
----
+## Remove
 
 如果集合中存在一个或多个这样的元素，就删掉一个。
 
@@ -103,7 +103,7 @@ boolean add(E e);
 boolean remove(Object o);
 ```
 
----
+## Contains All
 
 如果集合中包含所有 `c` 中指定的元素，返回 `true`。
 
@@ -111,7 +111,7 @@ boolean remove(Object o);
 boolean containsAll(Collection<?> c);
 ```
 
----
+## Add All
 
 将 `c` 中所有元素加入集合。如果特定结合在插入过程中被修改，那么操作状态未知 (暗示了自己不能 addAll 自己)。
 
@@ -119,7 +119,7 @@ boolean containsAll(Collection<?> c);
 boolean addAll(Collection<? extends E> c);
 ```
 
----
+## Remove All
 
 删除所有也在 `c` 中出现的元素。操作结束后，只剩下 `c` 中不出现的元素 (差集)。
 
@@ -127,7 +127,7 @@ boolean addAll(Collection<? extends E> c);
 boolean removeAll(Collection<?> c);
 ```
 
----
+## Retain All
 
 只保留也在 `c` 中出现的元素 (交集)。
 
@@ -135,7 +135,7 @@ boolean removeAll(Collection<?> c);
 boolean retainAll(Collection<?> c);
 ```
 
----
+## Clear
 
 清空集合。
 
@@ -143,7 +143,7 @@ boolean retainAll(Collection<?> c);
 void clear();
 ```
 
----
+## Remove If
 
 移除所有满足给定条件的元素。默认的实现：用迭代器迭代集合，用迭代器的 `Iterator.remove()` 移除元素。
 
@@ -162,13 +162,13 @@ default boolean removeIf(Predicate<? super E> filter) {
 }
 ```
 
----
+## Equals
 
 ```java
 boolean equals(Object o);
 ```
 
----
+## Hash Code
 
 返回集合的 hashcode。如果覆盖了 `equals()` 则必须覆盖 `hashcode()`。`c1.equals(c2)` 意味着 `c1.hashCode()==c2.hashCode()`。
 
@@ -176,7 +176,7 @@ boolean equals(Object o);
 int hashCode();
 ```
 
----
+## ...
 
 ```java
 @Override
@@ -194,6 +194,3 @@ default Stream<E> parallelStream() {
 ```
 
 这个..这个是干啥的..暂时还不懂
-
----
-

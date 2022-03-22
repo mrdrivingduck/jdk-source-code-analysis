@@ -16,11 +16,11 @@ public interface ListIterator<E> extends Iterator<E> {
 }
 ```
 
-针对 List 的抽象迭代器
+针对 List 的抽象迭代器：
 
-* 允许从 **任意一个方向** 遍历集合
-* 在遍历期间修改集合
-* 获得迭代器的当前位置
+- 允许从 **任意一个方向** 遍历集合
+- 在遍历期间修改集合
+- 获得迭代器的当前位置
 
 ```java
 /**
@@ -57,7 +57,9 @@ public interface ListIterator<E> extends Iterator<E> {
  */
 ```
 
----
+## Has Next
+
+遍历时是否还有更多的元素可以遍历。
 
 ```java
 /**
@@ -72,9 +74,9 @@ public interface ListIterator<E> extends Iterator<E> {
 boolean hasNext();
 ```
 
-遍历时是否还有更多的元素可以遍历。
+## Next
 
----
+返回下一个元素，并使指针前进。
 
 ```java
 /**
@@ -90,9 +92,9 @@ boolean hasNext();
 E next();
 ```
 
-返回下一个元素，并使指针前进。
+## Has Previous
 
----
+这个是 ListIterator 特有的，因为要支持双向的遍历。是否存在前一个元素。
 
 ```java
 /**
@@ -107,9 +109,7 @@ E next();
 boolean hasPrevious();
 ```
 
-这个是 ListIterator 特有的，因为要支持双向的遍历。
-
----
+与 `next()` 配套。
 
 ```java
 /**
@@ -127,9 +127,9 @@ boolean hasPrevious();
 E previous();
 ```
 
-与 `next()` 配套。
+## Next/Previous Index
 
----
+返回下一次调用 `next()` 或 `previous()` 的迭代器位置。
 
 ```java
 /**
@@ -155,9 +155,9 @@ int nextIndex();
 int previousIndex();
 ```
 
-返回下一次调用 `next()` 或 `previous()` 的迭代器位置。
+## Remove
 
----
+移除迭代器返回的上一个元素。
 
 ```java
 /**
@@ -177,9 +177,9 @@ int previousIndex();
 void remove();
 ```
 
-移除迭代器返回的上一个元素。
+## Set
 
----
+用指定元素替换迭代器返回的上一个元素。
 
 ```java
 /**
@@ -205,9 +205,12 @@ void remove();
 void set(E e);
 ```
 
-用指定元素替换迭代器返回的上一个元素。
+## Add
 
----
+元素被插入到下一个被返回的元素之前
+
+- 下一次调用 `next()` 不受影响
+- 下一次调用 `previous()` 返回新元素
 
 ```java
 /**
@@ -233,16 +236,6 @@ void set(E e);
 void add(E e);
 ```
 
-元素被插入到下一个被返回的元素之前
-
-* 下一次调用 `next()` 不受影响
-* 下一次调用 `previous()` 返回新元素
-
----
-
 ## Summary
 
 针对 List 定义了增、删、改的操作，查操作本来就是迭代器的主要功能，比较特殊的是双向性：所以很多操作都定义了两套，对应前后两个方向。
-
----
-

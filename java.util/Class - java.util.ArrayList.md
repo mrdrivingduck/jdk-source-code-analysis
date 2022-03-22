@@ -12,8 +12,8 @@ Nanjing, Jiangsu, China
 
 List 的可调整大小数组的实现，实现了所有的 List 可选操作。与 Vector 几乎相同，但是不是同步的 - 如果多个线程访问 ArrayList 实例，至少一个线程修改了 ArrayList 的结构，则需要在外部同步：
 
-* 如果 ArrayList 被别的对象封装，则需要对封装对象同步
-* 如果没有被封装，而需要被 `Collections.synchronizedList()` 封装
+- 如果 ArrayList 被别的对象封装，则需要对封装对象同步
+- 如果没有被封装，而需要被 `Collections.synchronizedList()` 封装
 
 使用迭代器迭代时，如果没有使用迭代器自己的函数操作 ArrayList，则会抛出 `ConcurrentModificationException`。
 
@@ -97,8 +97,6 @@ public class ArrayList<E> extends AbstractList<E>
 
 }
 ```
-
----
 
 ## Fields
 
@@ -279,8 +277,8 @@ private static int hugeCapacity(int minCapacity) {
 
 从头或尾开始寻找数组中是否存在某个元素：
 
-* 基于 `equals()` 进行比较
-* 允许 `null` 元素
+- 基于 `equals()` 进行比较
+- 允许 `null` 元素
 
 ```java
 /**
@@ -544,8 +542,8 @@ public E remove(int index) {
 
 删除元素在数组中的第一次出现，也可以删除 `null`，实现了一个内部版的 `fastRemove()`。
 
-* 不进行边界检测
-* 也不返回被移除的值
+- 不进行边界检测
+- 也不返回被移除的值
 
 ```java
 /**
@@ -715,8 +713,8 @@ private void rangeCheckForAdd(int index) {
 
 删除给定集合中出现或者未出现的元素 (由 `complement` 决定)。首先复制一份内部数组，然后依次判断该元素是否在给定集合中出现或未出现。如果满足条件，则填充到数组的最开头。
 
-* 如果发现原数组没有被判断完，则直接将没被判断完的数组移动到被填充的元素最后 (`contains()` 出现了异常？？？)
-* 如果被填充的元素个数小于 size，则从最后一个被填充元素的下一个位置开始全部置为 `null`，便于 GC
+- 如果发现原数组没有被判断完，则直接将没被判断完的数组移动到被填充的元素最后 (`contains()` 出现了异常？？？)
+- 如果被填充的元素个数小于 size，则从最后一个被填充元素的下一个位置开始全部置为 `null`，便于 GC
 
 ```java
 private boolean batchRemove(Collection<?> c, boolean complement) {
@@ -1232,6 +1230,3 @@ public void sort(Comparator<? super E> c) {
 ## Summary
 
 大致看了一下 `java.util.Vector`，实现上基本是相同的。区别是 Vector 的函数基本上都带有 `synchronized` 关键字，所以是线程安全的。
-
----
-

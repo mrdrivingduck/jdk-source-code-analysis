@@ -19,38 +19,19 @@ public class IdentityHashMap<K,V>
 }
 ```
 
-这个类也用 hash table 实现了 Map 接口
+这个类也用 hash table 实现了 Map 接口，但在比较 key 时，使用了 **引用相等**，而不是 **对象相等**：
 
-但在比较 key 时，使用了 __引用相等__，而不是 __对象相等__
-
-* __引用相等__ 比较指向的内存地址是否相等
-* __对象相等__ 比较内存中存放的内容是否相等 - 使用 `equals()` 进行判断
+- **引用相等** 比较指向的内存地址是否相等
+- **对象相等** 比较内存中存放的内容是否相等，使用 `equals()` 进行判断
 
 区别在于：
 
-* 在 `IdentityHashMap` 中，`k1` 和 `k2` 相等当且仅当 `k1 == k2`
-* 在 `HashMap` 中，`k1` 和 `k2` 相等当且仅当 `(k1==null ? k2==null : k1.equals(k2))`
+- 在 `IdentityHashMap` 中，`k1` 和 `k2` 相等当且仅当 `k1 == k2`
+- 在 `HashMap` 中，`k1` 和 `k2` 相等当且仅当 `(k1==null ? k2==null : k1.equals(k2))`
 
-这个类不是一个通用实现，因为其颠覆了 Map 接口中的定义
+这个类不是一个通用实现，因为其颠覆了 Map 接口中的定义，所以只有在特殊场合下才会被使用。允许空的 key 或 value，不保证迭代顺序。
 
-所以只有在特殊场合下才会被使用
-
-允许空的 key 或 value
-
-不保证迭代顺序
-
-特殊参数 - expected maximum size
-
-* 期望集合中容纳 entry 的数量
-* 在内部被用于分配桶的数量
-    * 但两者没有确定的关系
-
-如果集合中 entry 的实际数量超过了这个值较多，则会进行 rehashing
-
-而且在 hash table 的具体实现中，不像 `HashMap` 中用 __链__ 来解决 hash 冲突
-
-* 使用了 __线性探测 (linear-probe)__ 方法
-* 在性能上可能会比 `HashMap` 更好
+特殊参数：expected maximum size - 期望集合中容纳 entry 的数量。在内部被用于分配桶的数量，但两者没有确定的关系。如果集合中 entry 的实际数量超过了这个值较多，则会进行 rehashing。而且在 hash table 的具体实现中，不像 `HashMap` 中用 **链** 来解决 hash 冲突——使用了 **线性探测 (linear-probe)** 方法，在性能上可能会比 `HashMap` 更好。
 
 ```java
 /**
@@ -159,9 +140,9 @@ public class IdentityHashMap<K,V>
  */
 ```
 
----
+## Members
 
-成员变量
+默认的容量（必须是 2 的整数幂）：
 
 ```java
 /**
@@ -173,7 +154,7 @@ public class IdentityHashMap<K,V>
 private static final int DEFAULT_CAPACITY = 32;
 ```
 
-默认的容量 (必须是 2 的整数幂)
+最小容量 / 最大容量：
 
 ```java
 /**
@@ -196,7 +177,7 @@ private static final int MINIMUM_CAPACITY = 4;
 private static final int MAXIMUM_CAPACITY = 1 << 29;
 ```
 
-最小容量 / 最大容量
+哈希表：
 
 ```java
 /**
@@ -205,7 +186,7 @@ private static final int MAXIMUM_CAPACITY = 1 << 29;
 transient Object[] table; // non-private to simplify nested class access
 ```
 
-哈希表
+用于表示 `null` key：
 
 ```java
 /**
@@ -242,9 +223,9 @@ static final Object unmaskNull(Object key) {
 }
 ```
 
-用于表示 `null` key
+## Constructor
 
----
+默认或指定 `expectedMaxSize` 来初始化哈希表：
 
 ```java
 /**
@@ -272,7 +253,7 @@ public IdentityHashMap(int expectedMaxSize) {
 }
 ```
 
-默认或指定 `expectedMaxSize` 来初始化哈希表
+该函数能够保证返回合法范围内的 2 整数次幂的容量：
 
 ```java
 /**
@@ -291,7 +272,12 @@ private static int capacity(int expectedMaxSize) {
 }
 ```
 
-该函数能够保证返回合法范围内的 2 整数次幂的容量
+这个 `2` 是啥意思呢？没懂这个实现方式。一个 entry 占两个坑
+
+- 一个放 key
+- 一个放 value
+
+所以分配空间一分就分配两倍。
 
 ```java
 /**
@@ -308,15 +294,7 @@ private void init(int initCapacity) {
 }
 ```
 
-这个 `2` 是啥意思呢？没懂这个实现方式
-
-* 一个 entry 占两个坑
-    * 一个放 key
-    * 一个放 value
-
-所以分配空间一分就分配两倍
-
----
+拷贝构造函数，以 1.1 倍的扩充容量分配空间。
 
 ```java
 /**
@@ -333,11 +311,13 @@ public IdentityHashMap(Map<? extends K, ? extends V> m) {
 }
 ```
 
-拷贝构造函数
+## Get
 
-* 以 1.1 倍的扩充容量分配空间
+根据指定的 key (`tab[i]`) 取对应的 value (`tab[i + 1]`)
 
----
+- 首先处理 key 为 `null` 的情况
+- 然后计算 key 对应的 hashcode，在 hash table 的指定位置进行查找
+- 如果发生碰撞，则使用 **线性探测** 寻找下一个位置
 
 ```java
 /**
@@ -374,11 +354,7 @@ public V get(Object key) {
 }
 ```
 
-根据指定的 key (`tab[i]`) 取对应的 value (`tab[i + 1]`)
-
-* 首先处理 key 为 `null` 的情况
-* 然后计算 key 对应的 hashcode，在 hash table 的指定位置进行查找
-* 如果发生碰撞，则使用 __线性探测__ 寻找下一个位置
+用对象的 hash code 与 hash table 的长度进行 `&` 运算，返回对象在数组中的 index：
 
 ```java
 /**
@@ -391,9 +367,10 @@ private static int hash(Object x, int length) {
 }
 ```
 
-用对象的 hash code 与 hash table 的长度进行 `&` 运算
+线性探测函数
 
-返回对象在数组中的 index
+- 每次探测当前 key 的下一个 key
+- 当超出数组长度后，折返到第一个 key
 
 ```java
 /**
@@ -404,12 +381,9 @@ private static int nextKeyIndex(int i, int len) {
 }
 ```
 
-线性探测函数
+## Contain
 
-* 每次探测当前 key 的下一个 key
-* 当超出数组长度后，折返到第一个 key
-
----
+与上一个函数类似，但只返回 key 是否存在：
 
 ```java
 /**
@@ -437,9 +411,7 @@ public boolean containsKey(Object key) {
 }
 ```
 
-与上一个函数类似，但只返回 key 是否存在
-
----
+检查指定的 value 是否在集合中。显然需要开始遍历整个哈希表数组了，由于是遍历 value，因此循环是从 `1` 下标开始，且循环增量为 `2`：
 
 ```java
 /**
@@ -461,17 +433,7 @@ public boolean containsValue(Object value) {
 }
 ```
 
-检查指定的 value 是否在集合中
-
-显然需要开始遍历整个哈希表数组了
-
-由于是遍历 value
-
-因此循环是从 `1` 下标开始
-
-且循环增量为 `2`
-
----
+查看集合中是否存在某个 key 到 value 的映射。与上面的函数类似，首先找到特定的 key，返回该 key 对应的 value 与指定的 value 是否相同。
 
 ```java
 /**
@@ -498,13 +460,25 @@ private boolean containsMapping(Object key, Object value) {
 }
 ```
 
-查看集合中是否存在某个 key 到 value 的映射
+## Put
 
-与上面的函数类似，首先找到特定的 key
+第一次在 Java 中看见了标号 😯
 
-返回该 key 对应的 value 与指定的 value 是否相同
+该函数试图将 key 和 value 的映射加入到哈希表中如果映射已经存在，就用新的 value 替代老的 value
 
----
+- 首先根据指定的 key 和哈希表的长度，计算映射到的 index
+- 如果 index 有冲突，则使用线性探测，向后寻找空位，直到找到 old value 并返回
+
+如果没有找到映射，着手将映射加入哈希表：
+
+- 首先，检查一下加入这个 entry 之后，entry 总个数是否已经超过了哈希表数组的 1/3
+- 如果是，那么就要进行 `resize()`，重新分配空间 (哈希表数组扩容两倍)
+- 重新分配空间后，要跳转到标号处重新寻找 hash 位置 (因为数组的长度变了)
+
+最终找到被插入的位置 `i`：
+
+- key 存放在位置 `tab[i]`
+- value 存放在位置 `tab[i + 1]`
 
 ```java
 /**
@@ -555,27 +529,9 @@ public V put(K key, V value) {
 }
 ```
 
-第一次在 Java 中看见了标号 😯
+## Resize
 
-该函数试图将 key 和 value 的映射加入到哈希表中
-
-如果映射已经存在，就用新的 value 替代老的 value
-
-* 首先根据指定的 key 和哈希表的长度，计算映射到的 index
-* 如果 index 有冲突，则使用线性探测，向后寻找空位，直到找到 old value 并返回
-
-如果没有找到映射，着手将映射加入哈希表
-
-* 首先，检查一下加入这个 entry 之后，entry 总个数是否已经超过了哈希表数组的 1/3
-* 如果是，那么就要进行 `resize()`，重新分配空间 (哈希表数组扩容两倍)
-* 重新分配空间后，要跳转到标号处重新寻找 hash 位置 (因为数组的长度变了)
-
-最终找到被插入的位置 `i`
-
-* key 存放在位置 `tab[i]`
-* value 存放在位置 `tab[i + 1]`
-
----
+将哈希表的空间开辟为原来的两倍，然后将旧的哈希表中的每一个 key 重新计算 hash。并将对应的 key 和 value 加入到新的哈希表中。
 
 ```java
 /**
@@ -618,13 +574,9 @@ private boolean resize(int newCapacity) {
 }
 ```
 
-将哈希表的空间开辟为原来的两倍
+## Put All
 
-然后将旧的哈希表中的每一个 key 重新计算 hash
-
-并将对应的 key 和 value 加入到新的哈希表中
-
----
+首先检查空间是否足够，不够的话调 `resize()` 进行扩容，然后迭代每一个 entry 并加入集合中。
 
 ```java
 /**
@@ -647,11 +599,15 @@ public void putAll(Map<? extends K, ? extends V> m) {
 }
 ```
 
-首先检查空间是否足够，不够的话调 `resize()` 进行扩容
+## Remove
 
-然后迭代每一个 entry 并加入集合中
+从集合中移除 entry
 
----
+- 首先根据指定的 key 计算 hash 值
+- 获得在哈希表中的 index
+- 从该 index 开始进行线性探测
+- 直到找到 key 和指定的 key 相同的 entry
+- 将 `tab[i]` 位置的 key 和 `tab[i + 1]` 位置的 value 移除
 
 ```java
 /**
@@ -688,13 +644,15 @@ public V remove(Object key) {
 }
 ```
 
-从集合中移除 entry
+删除指定 key 和 value 的 entry
 
-* 首先根据指定的 key 计算 hash 值
-* 获得在哈希表中的 index
-* 从该 index 开始进行线性探测
-* 直到找到 key 和指定的 key 相同的 entry
-* 将 `tab[i]` 位置的 key 和 `tab[i + 1]` 位置的 value 移除
+- 先根据 key 计算出 hash 值，找到哈希表中的 index
+- 从 index 开始线性探测，直到找到指定 key 的 entry
+- 比较该 entry 的 value 是否与指定的 value 相等
+  - 如果相等，才返回成功
+  - 否则返回失败
+
+在上述两个操作中，移除 entry 后，就有了空位置。向后线性探测一下，看看需不需要把冲突元素搬运到空的位置上。
 
 ```java
 /**
@@ -729,20 +687,6 @@ private boolean removeMapping(Object key, Object value) {
     }
 }
 ```
-
-删除指定 key 和 value 的 entry
-
-* 先根据 key 计算出 hash 值，找到哈希表中的 index
-* 从 index 开始线性探测，直到找到指定 key 的 entry
-* 比较该 entry 的 value 是否与指定的 value 相等
-    * 如果相等，才返回成功
-    * 否则返回失败
-
-在上述两个操作中
-
-移除 entry 后，就有了空位置
-
-向后线性探测一下，看看需不需要把冲突元素搬运到空的位置上
 
 ```java
 /**
@@ -782,7 +726,9 @@ private void closeDeletion(int d) {
 }
 ```
 
----
+## Clear
+
+将所有 entry 置空。
 
 ```java
 /**
@@ -798,9 +744,9 @@ public void clear() {
 }
 ```
 
-将所有 entry 置空
+## Equals
 
----
+要验证每一个 entry 都相同。
 
 ```java
 /**
@@ -844,9 +790,9 @@ public boolean equals(Object o) {
 }
 ```
 
-要验证每一个 entry 都相同
+## Hash Code
 
----
+每个 entry 的 key 与 value 异或后的和。
 
 ```java
 /**
@@ -883,9 +829,9 @@ public int hashCode() {
 }
 ```
 
-每个 entry 的 key 与 value 异或后的和
+## Clone
 
----
+浅拷贝。
 
 ```java
 /**
@@ -906,9 +852,7 @@ public Object clone() {
 }
 ```
 
-浅拷贝
-
----
+## Iterator
 
 关于迭代器的基本实现：
 
@@ -926,7 +870,7 @@ boolean indexValid; // To avoid unnecessary next computation
 Object[] traversalTable = table; // reference to main table or copy
 ```
 
-由于哈希表的内部实现是数组，`index` 显然用于记录数组索引下标
+由于哈希表的内部实现是数组，`index` 显然用于记录数组索引下标。
 
 查看是否还有下一个迭代的元素：
 
@@ -945,13 +889,9 @@ public boolean hasNext() {
 }
 ```
 
-从迭代器的当前位置开始开始向后搜索
+从迭代器的当前位置开始开始向后搜索。如果不为 `null`，则返回 `true`；如果为 `null`，则继续搜索，直到哈希表的最后。
 
-如果不为 `null`，则返回 `true`
-
-如果为 `null`，则继续搜索，直到哈希表的最后
-
-以下两个函数没吃透，只知道大概的用途，以后再看吧
+以下两个函数没吃透，只知道大概的用途，以后再看吧：
 
 ```java
 protected int nextIndex() {
@@ -1045,6 +985,3 @@ public void remove() {
     }
 }
 ```
-
----
-

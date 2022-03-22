@@ -23,7 +23,7 @@ public abstract class AbstractQueue<E>
 - `remove()` 基于 `poll()`
 - `element()` 基于 `peek()`
 
-但对于失败的操作会抛出异常，而不是返回 `null` 或 `false`
+但对于失败的操作会抛出异常，而不是返回 `null` 或 `false`。
 
 ```java
 /**
@@ -54,6 +54,8 @@ public abstract class AbstractQueue<E>
  */
 ```
 
+## Constructor
+
 ```java
 /**
  * Constructor for use by subclasses.
@@ -61,6 +63,8 @@ public abstract class AbstractQueue<E>
 protected AbstractQueue() {
 }
 ```
+
+## Add
 
 在 `offer()` 返回失败（即意味着没有空间）时抛出异常。
 
@@ -93,6 +97,8 @@ public boolean add(E e) {
 }
 ```
 
+## Remove
+
 在队列已经为空时，抛出异常。
 
 ```java
@@ -115,6 +121,8 @@ public E remove() {
         throw new NoSuchElementException();
 }
 ```
+
+## Element
 
 看一下队头元素，如果为空，则抛出异常。
 
@@ -139,6 +147,8 @@ public E element() {
 }
 ```
 
+## Clear
+
 把所有的元素全部都移除。
 
 ```java
@@ -154,6 +164,8 @@ public void clear() {
         ;
 }
 ```
+
+## Add All
 
 ```java
 /**

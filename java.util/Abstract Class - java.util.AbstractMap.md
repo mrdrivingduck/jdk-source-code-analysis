@@ -66,7 +66,7 @@ Map 接口的骨架实现。
  */
 ```
 
-集合大小：
+## Size
 
 ```java
 /**
@@ -89,6 +89,8 @@ public boolean isEmpty() {
     return size() == 0;
 }
 ```
+
+## Contains
 
 利用 `entrySet()` 的迭代器迭代整个 Map，检验是否存在指定的 value。检验所需要的时间与 Map 大小呈线性关系。
 
@@ -197,6 +199,8 @@ public V get(Object key) {
 }
 ```
 
+## Put
+
 需要被重写？
 
 ```java
@@ -216,6 +220,8 @@ public V put(K key, V value) {
     throw new UnsupportedOperationException();
 }
 ```
+
+## Remove
 
 依旧是通过迭代，找到 key 和对应的 entry，然后用迭代器的 `remove()` 函数将 entry 删除，并返回旧的 value。
 
@@ -309,6 +315,8 @@ public void clear() {
     entrySet().clear();
 }
 ```
+
+## Key / Value Set
 
 这两个集合会在第一次请求时被构造，之后会在 Map 内被维护。因此之后的请求可以直接返回这个集合。
 
@@ -471,6 +479,8 @@ public Collection<V> values() {
 public abstract Set<Entry<K,V>> entrySet();
 ```
 
+## Equals
+
 首先要保证被比较的对象也是一个 Map，然后分别比较自身和被比较对象的 `entrySet()` 是否完全相同——调用 value 对象的 `equals()`。
 
 ```java
@@ -560,6 +570,8 @@ public int hashCode() {
 }
 ```
 
+## To String
+
 以 `entrySet()` 的迭代器顺序，返回 Map 的字符串表示。
 
 ```java
@@ -595,6 +607,8 @@ public String toString() {
     }
 }
 ```
+
+## Clone
 
 浅拷贝。但是没用搞懂这两个置 `null` 的含义，可能是因为没有搞懂 `keySet` 和 `values` 这两个内部变量的具体维护方式。等看具体实现类的时候再看看。
 

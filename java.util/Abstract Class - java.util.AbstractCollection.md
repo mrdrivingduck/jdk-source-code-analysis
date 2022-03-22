@@ -18,12 +18,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 实现 `Collection` 接口的基本抽象类
 
-- 为了实现不可修改的集合
-  - 必须实现 `iterator()` 和 `size()` 函数
-  - 返回的迭代器必须实现 `hasNext()` 和 `next()`
-- 为了实现可修改的集合
-  - 必须额外 override `add()` 函数
-  - 返回的迭代器必须实现 `remove()` 函数
+- 为了实现不可修改的集合，必须实现 `iterator()` 和 `size()` 函数，返回的迭代器必须实现 `hasNext()` 和 `next()`
+- 为了实现可修改的集合，必须额外 override `add()` 函数，返回的迭代器必须实现 `remove()` 函数
 
 ```java
 /**
@@ -60,7 +56,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
  */
 ```
 
-构造函数：
+## Constructor
 
 ```java
 /**
@@ -71,7 +67,7 @@ protected AbstractCollection() {
 }
 ```
 
-返回迭代器：
+## Iterator
 
 ```java
 /**
@@ -82,7 +78,7 @@ protected AbstractCollection() {
 public abstract Iterator<E> iterator();
 ```
 
-返回结合中的元素，和集合是否为空：
+## Size
 
 ```java
 public abstract int size();
@@ -91,6 +87,8 @@ public boolean isEmpty() {
     return size() == 0;
 }
 ```
+
+## Contains
 
 遍历集合中的每个元素，查看是否存在相同的元素。注意比较用的是 `equals()`，默认比较内存地址 (是否是同一个对象)——如果想要比较内容，需要 override `equals()`：
 
@@ -118,6 +116,8 @@ public boolean contains(Object o) {
     return false;
 }
 ```
+
+## To Array
 
 返回与迭代器遍历顺序相同的元素。
 
@@ -214,6 +214,8 @@ private static int hugeCapacity(int minCapacity) {
 }
 ```
 
+## Add / Remove
+
 可修改集合必须实现该函数，否则异常。
 
 ```java
@@ -263,6 +265,8 @@ public boolean remove(Object o) {
     return false;
 }
 ```
+
+## 集合操作
 
 迭代输入集合中的每一个元素。如果有本集合不存在的元素，则立刻退出。
 
@@ -419,6 +423,8 @@ public void clear() {
     }
 }
 ```
+
+## To String
 
 用 `[]` 和 `,` 将集合用字符串表示。
 

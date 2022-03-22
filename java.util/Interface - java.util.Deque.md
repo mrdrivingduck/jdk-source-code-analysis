@@ -17,15 +17,15 @@ public interface Deque<E> extends Queue<E> {
 
 线性集合，支持在两端插入和删除。Deque - "double ended queue" (pronounced **deck**)。大部分实现对集合容量没有特定限制，但也支持指定容量的双端队列。接口对队列两端都定义了以下几种操作：
 
-* insert
-* remove
-* examine
-* element
+- insert
+- remove
+- examine
+- element
 
 每种操作都有两种形式：
 
-* 操作失败后抛出异常
-* 操作失败后返回特定值 (`null` 或 `false`)
+- 操作失败后抛出异常
+- 操作失败后返回特定值 (`null` 或 `false`)
 
 ```java
 /**
@@ -185,8 +185,6 @@ public interface Deque<E> extends Queue<E> {
  */
 ```
 
----
-
 ## 插入操作
 
 `add` 一族会在插入失败后抛出异常。
@@ -197,8 +195,6 @@ void addLast(E e);
 boolean offerFirst(E e);
 boolean offerLast(E e);
 ```
-
----
 
 ## 删除操作
 
@@ -211,7 +207,10 @@ E pollFirst();
 E pollLast();
 ```
 
----
+```java
+boolean removeFirstOccurrence(Object o);
+boolean removeLastOccurrence(Object o);
+```
 
 ## 访问操作
 
@@ -224,41 +223,29 @@ E peekFirst();
 E peekLast();
 ```
 
----
-
-```java
-boolean removeFirstOccurrence(Object o);
-boolean removeLastOccurrence(Object o);
-```
-
----
+## 接口操作
 
 双端队列在当做普通队列使用时，以下函数和普通队列的函数等价：数据从队尾加入，从队头删除。
 
-* `java.util.Queue.add()` - `addLast()`
-* `java.util.Queue.offer()` - `offerLast()`
-* `java.util.Queue.remove()` - `removeFirst()`
-* `java.util.Queue.poll()` - `pollFirst()`
-* `java.util.Queue.element()` - `getFirst()`
-* `java.util.Queue.peek()` - `peekFirst()`
-
----
+- `java.util.Queue.add()` - `addLast()`
+- `java.util.Queue.offer()` - `offerLast()`
+- `java.util.Queue.remove()` - `removeFirst()`
+- `java.util.Queue.poll()` - `pollFirst()`
+- `java.util.Queue.element()` - `getFirst()`
+- `java.util.Queue.peek()` - `peekFirst()`
 
 双端队列当做栈使用时，以下函数等价：总在队头出栈、入栈。
 
-* `push()` - `addFirst()`
-* `pop()` - `removeFirst()`
-* `peek()` - `peekFirst()`
+- `push()` - `addFirst()`
+- `pop()` - `removeFirst()`
+- `peek()` - `peekFirst()`
 
----
+## 集合操作
 
 集合操作依旧是那几个：
 
-* `remove()`
-* `contains()`
-* `size()`
-* `iterator()`
-* `descendingIterator()`
-
----
-
+- `remove()`
+- `contains()`
+- `size()`
+- `iterator()`
+- `descendingIterator()`

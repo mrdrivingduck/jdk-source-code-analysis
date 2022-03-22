@@ -10,13 +10,13 @@ Nanjing, Jiangsu, China
 
 ## Definition
 
+`Set` 接口的骨架实现。这个类没有覆盖 `AbstractCollection` 中的任何函数，只实现了 `equals()` 和 `hashcode()`。
+
 ```java
 public abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E> {
 
 }
 ```
-
-`Set` 接口的骨架实现。这个类没有覆盖 `AbstractCollection` 中的任何函数，只实现了 `equals()` 和 `hashcode()`。
 
 ```java
 /**
@@ -49,6 +49,8 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
  * @since 1.2
  */
 ```
+
+## Equals
 
 比较两个 Set 是否相同。返回 `true` 的条件：
 
@@ -93,6 +95,8 @@ public boolean equals(Object o) {
 }
 ```
 
+## HashCode
+
 计算集合的 hashcode。迭代每一个元素的 hashcode，并累加。`null` 的 hashcode 为 `0`。
 
 ```java
@@ -124,6 +128,8 @@ public int hashCode() {
     return h;
 }
 ```
+
+## Remove All
 
 两个集合的差集。在实现的细节上，选择两个集合中元素较少的集合进行迭代。
 

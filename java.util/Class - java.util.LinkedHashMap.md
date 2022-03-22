@@ -171,12 +171,10 @@ static class Entry<K,V> extends HashMap.Node<K,V> {
 
 ## Linked List Pointer
 
-定义双向链表的头指针和尾指针。
+定义双向链表的头指针和尾指针。定义了维护链表的顺序：
 
-定义了维护链表的顺序：
-
-* `accessOrder` 为 `true` 时，按照访问结点的顺序来组织链表 (即 LRU)
-* `accessOrder` 为 `false` 时，按照结点的插入顺序来组织链表
+- `accessOrder` 为 `true` 时，按照访问结点的顺序来组织链表 (即 LRU)
+- `accessOrder` 为 `false` 时，按照结点的插入顺序来组织链表
 
 ```java
 /**
@@ -237,8 +235,8 @@ private void transferLinks(LinkedHashMap.Entry<K,V> src,
 
 ## Node Operations
 
-* 添加结点：实例化新结点后，将结点添加到链表尾部
-* 替换结点：实例化新结点后，将原结点的链表引用关系转移到新结点上
+- 添加结点：实例化新结点后，将结点添加到链表尾部
+- 替换结点：实例化新结点后，将原结点的链表引用关系转移到新结点上
 
 ```java
 Node<K,V> newNode(int hash, K key, V value, Node<K,V> e) {
@@ -333,8 +331,8 @@ void afterNodeAccess(Node<K,V> e) { // move node to last
 
 构造函数，内部直接调用 `HashMap` 的构造函数
 
-* 大部分情况下，`accessOrder` 默认为 `false`，即按照插入顺序组织链表
-* 但可以显式指定为 `true`，按照访问顺序组织链表
+- 大部分情况下，`accessOrder` 默认为 `false`，即按照插入顺序组织链表
+- 但可以显式指定为 `true`，按照访问顺序组织链表
 
 ```java
 /**
@@ -552,9 +550,9 @@ protected boolean removeEldestEntry(Map.Entry eldest) {
 
 迭代器维护 `next` 和 `current` 指针，分别指向下一个迭代结点和当前迭代结点。提供三个函数：
 
-* `hasNext()` - 是否有下一个结点
-* `nextNode()` - 迭代下一个结点
-* `remove()` - 调 `HashMap` 的 `removeNode()` 函数，`HashMap` 的 `removeNode()` 函数中会调用 `afterNodeRemoval()` 作为回调，处理双向链表指针
+- `hasNext()` - 是否有下一个结点
+- `nextNode()` - 迭代下一个结点
+- `remove()` - 调 `HashMap` 的 `removeNode()` 函数，`HashMap` 的 `removeNode()` 函数中会调用 `afterNodeRemoval()` 作为回调，处理双向链表指针
 
 ```java
 // Iterators
@@ -613,6 +611,3 @@ final class LinkedEntryIterator extends LinkedHashIterator
     public final Map.Entry<K,V> next() { return nextNode(); }
 }
 ```
-
----
-
