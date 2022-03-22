@@ -75,8 +75,8 @@ Analyze the implementation details of JDK 8.
 | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `java.util.concurrent.locks.AbstractOwnableSynchronizer` | [link](./java.util.concurrent/Abstract%20Class%20-%20java.util.concurrent.locks.AbstractOwnableSynchronizer.md) |
 | `java.util.concurrent.locks.AbstractQueuedSynchronizer`  | [link](./java.util.concurrent/Abstract%20Class%20-%20java.util.concurrent.locks.AbstractQueuedSynchronizer.md)  |
+| `java.util.concurrent.locks.AbstractExecutorService`    | [link](./java.util.concurrent/Abstract%20Class%20-%20java.util.concurrent.locks.AbstractExecutorService.md)    |
 | `java.util.concurrent.atomic.AtomicIntegerFieldUpdater`  | [link](./java.util.concurrent/Abstract%20Class%20-%20java.util.concurrent.atomic.AtomicIntegerFieldUpdater.md)  |
-| `java.util.concurrent.atomic.AbstractExecutorService`    | [link](./java.util.concurrent/Abstract%20Class%20-%20java.util.concurrent.atomic.AbstractExecutorService.md)    |
 
 ### Classes
 
