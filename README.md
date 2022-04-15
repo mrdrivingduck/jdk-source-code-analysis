@@ -169,4 +169,4 @@ Analyze the implementation details of JDK 8.
 
 ## License
 
-Copyright © 2019-2021, Jingtang Zhang. ([MIT License](LICENSE))
+Copyright © 2019-2021, Jingtang Zhang. ([MIT License](./LICENSE))
